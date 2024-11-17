@@ -80,7 +80,7 @@ function Register() {
   };
 
   return (
-    <div className="bg-gradient-to-r from-orange-400 via-yellow-500 to-orange-600 min-h-screen flex items-center justify-center">
+    <div className="bg-gradient-to-r py-12 from-orange-400 via-yellow-500 to-orange-600 min-h-screen flex items-center justify-center">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
         <h1 className="text-center font-bold text-3xl text-gray-800 mb-6">Register</h1>
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
@@ -125,6 +125,17 @@ function Register() {
               })}
             />
             {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
+          </div>
+          <div>
+            <Label htmlFor="userType" value="Select user type" className="text-gray-600 font-semibold" />
+            <select id="userType" name="userType" className="mt-2 p-3 w-full border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2" {...register("userType", { required: "User type is required" })}>
+              <option value="" disabled selected>
+                Select a user type
+              </option>
+              <option value="user">User</option>
+              <option value="mechanic">Mechanic</option>
+            </select>
+            {errors.userType && <p className="text-red-500 text-sm">{errors.userType.message}</p>}
           </div>
 
           <div className="flex justify-between items-center">
