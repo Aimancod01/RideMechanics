@@ -1,18 +1,24 @@
 const MechanicCards = ({ mechanics, selectMechanic }) => {
   return (
-    <div className="bg-white py-8">
-      <h2 className="text-3xl font-bold text-center mb-6">Our Certified Mechanics</h2>
-      <div className="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+    <div className="bg-orange-500 px-5 rounded py-8">
+      <h2 className="text-3xl text-white font-bold text-center mb-6">Our Certified Mechanics</h2>
+      <div className="container mx-auto flex flex-wrap justify-center gap-4">
         {mechanics.map((mechanic) => (
-          <div key={mechanic.id} className="bg-orange-500 p-6 rounded-lg shadow-lg cursor-pointer hover:shadow-2xl transition duration-300" onClick={() => selectMechanic(mechanic)}>
-            <h3 className="text-xl font-bold mb-2">{mechanic.name}</h3>
-            <p>
-              <strong>Specialty:</strong> {mechanic.specialty}
-            </p>
-            <p>
-              <strong>Rating:</strong> {mechanic.rating} / 5
-            </p>
-            <button className="mt-4 bg-blue-500 text-white py-2 px-4 rounded">View Profile</button>
+          <div key={mechanic.id} className="flex items-center bg-white p-4 rounded-lg shadow-lg cursor-pointer hover:shadow-2xl transition duration-300 w-full" onClick={() => selectMechanic(mechanic)}>
+            <img
+              src={`https://i.pravatar.cc/150?img=${mechanic.id}`} // Replace with mechanic's image source if available
+              alt={`${mechanic.name}'s avatar`}
+              className="w-16 h-16 rounded-full mr-4"
+            />
+            <div className="flex-1">
+              <h3 className="text-xl font-bold mb-1 ">{mechanic.name}</h3>
+              <p className=" mb-1">
+                <strong>Specialty:</strong> {mechanic.specialty}
+              </p>
+              <p className="">
+                <strong>Rating:</strong> {mechanic.rating} / 5
+              </p>
+            </div>
           </div>
         ))}
       </div>
