@@ -30,11 +30,12 @@ const SearchForm = () => {
       }
 
       setDays(dayDifference);
-      setDays(dayDifference);
+    
       const carResponse = await axios.post('http://localhost:5000/api/cars', {
         days: dayDifference,
         city: city
       });
+      console.log('carResponse',carResponse.data);
       setCars(carResponse.data);
     } catch (error) {
       console.error('Error submitting pick and drop details:', error);
@@ -50,8 +51,8 @@ const SearchForm = () => {
     "08:00 PM", "09:00 PM", "10:00 PM", "11:00 PM"
   ]
   const navigate = useNavigate();
-  const handleSearchForm = () => {
-    navigate("/search");
+  const handleGoToCustomer = (carId) => {
+    navigate('/api/car/${carId}');
   };
 
   return (
@@ -127,7 +128,36 @@ const SearchForm = () => {
             Search Available Cars
           </button>  
 
-        </form>  {error && (
+        </form> 
+        
+        {cars.length > 0 && (
+          <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {cars.map((car) => (
+              <div
+                key={car._id}
+                className="bg-white shadow-md rounded-lg overflow-hidden"
+              >
+                <img
+                  src={car.image}
+                  alt={car.carName}
+                  className="w-full h-40 object-cover"
+                />
+                <div className="p-4">
+                  <h3 className="text-lg font-bold">{car.carName}</h3>
+                  <p className="text-gray-600">{car.carModel}</p>
+                  <p className="text-orange-600 font-bold">
+                    ${car.price} / day
+                  </p>
+                  <button  onClick={handleGoToCustomer(car._id)} className="mt-4 w-full bg-orange-500 text-white py-2 rounded-lg hover:bg-orange-600">
+                    Book Now
+                  </button>
+                </div>
+              </div>
+            ))}
+           </div>
+        )}
+        
+         {error && (
           <div className="mt-3 sm:mt-4 md:mt-5 lg:mt-6 bg-red-100 border-l-4 border-red-500 text-red-700 p-2 sm:p-3 md:p-4 rounded-md flex items-start">
             <AlertCircle className="flex-shrink-0 mr-2 h-4 sm:h-5 w-4 sm:w-5" />
             <p className="text-xs sm:text-sm md:text-base">{error}</p>
@@ -137,7 +167,8 @@ const SearchForm = () => {
             Rental duration: <span className="font-bold text-orange-600">{days} days</span>
           </p>
         )} </div>
-    </div>   
+    </div> 
+     
   
   );
 };

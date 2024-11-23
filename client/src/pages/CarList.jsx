@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
-import axios from 'axios'; import { Link } from 'react-router-dom';
+import axios from 'axios'; 
+import { Link } from 'react-router-dom';
 import Modal from 'react-modal'; import SearchForm from '../components/Search';
 import { useNavigate } from 'react-router-dom'; import { CartContext } from '../components/CartContext';
 import { ChevronLeft, ChevronRight, Users, Car, Gauge, Wind } from 'lucide-react'
