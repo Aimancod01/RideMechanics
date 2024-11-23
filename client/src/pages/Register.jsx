@@ -10,8 +10,10 @@ function Register() {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm();
+  const userType = watch("userType");
   const token = localStorage.getItem("userinfo");
 
   useEffect(() => {
@@ -126,6 +128,7 @@ function Register() {
             />
             {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
           </div>
+
           <div>
             <Label htmlFor="userType" value="Select user type" className="text-gray-600 font-semibold" />
             <select id="userType" name="userType" className="mt-2 p-3 w-full border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2" {...register("userType", { required: "User type is required" })}>
@@ -138,16 +141,38 @@ function Register() {
             {errors.userType && <p className="text-red-500 text-sm">{errors.userType.message}</p>}
           </div>
 
+          {userType === "mechanic" && (
+            <>
+              <div>
+                <Label htmlFor="title" value="Shop Title" className="text-gray-600 font-semibold" />
+                <TextInput id="title" name="title" type="text" placeholder="E.g., Auto Workshop" className="mt-2 p-3 w-full border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500" {...register("title", { required: "Shop Title is required" })} />
+                {errors.title && <p className="text-red-500 text-sm">{errors.title.message}</p>}
+              </div>
+              <div>
+                <Label htmlFor="speciality" value="Speciality" className="text-gray-600 font-semibold" />
+                <TextInput
+                  id="speciality"
+                  name="speciality"
+                  type="text"
+                  placeholder="E.g., Engine Repair"
+                  className="mt-2 p-3 w-full border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  {...register("speciality", { required: "Speciality is required" })}
+                />
+                {errors.speciality && <p className="text-red-500 text-sm">{errors.speciality.message}</p>}
+              </div>
+            </>
+          )}
+
           <div className="flex justify-between items-center">
-            <button type="submit" className="bg-orange-500 hover:bg-orange-600 text-white font-bold px-6 py-3 rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
-              Register
-            </button>
             <p className="text-sm text-gray-600">
               Already a Member?{" "}
               <Link to="/login" className="text-orange-500 font-semibold hover:text-orange-600">
                 Login
               </Link>
             </p>
+            <button type="submit" className="bg-orange-500 hover:bg-orange-600 text-white font-bold px-6 py-3 rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
+              Register
+            </button>
           </div>
         </form>
       </div>

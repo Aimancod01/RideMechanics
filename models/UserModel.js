@@ -20,6 +20,15 @@ const UserSchema = new mongoose.Schema({
     enum: ["user", "mechanic"],
     default: "user",
   },
+  title: {
+    type: String,
+    default: null,
+  },
+
+  speciality: {
+    type: String,
+    default: null,
+  },
 });
 
 const User = mongoose.model("User", UserSchema);
