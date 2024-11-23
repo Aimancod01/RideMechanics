@@ -266,7 +266,7 @@ const SearchForm = () => {
                     <span className=" font-bold text-xl">Rs {car.price}/{car.days} day(s)</span>
                     <button
                       onClick={() => openModal(car)}
-                      className="bg-orange-500 text-white font-semibold py-2 px-4 rounded hover:bg-orange-600"
+                      className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 sm:py-2.5 md:py-3 px-4 sm:px-6 rounded-lg text-xs sm:text-sm md:text-base transition duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 flex items-center justify-center"
                     >
                       Book me
                     </button>
@@ -336,8 +336,8 @@ const SearchForm = () => {
                     </div>
                     <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
                       <span className="text-2xl font-bold text-orange-600">Total Rs {selectedCar.price}</span> <div className="flex gap-4">
-                        <button onClick={handleCustomerForm} className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded" >
-                          continue
+                        <button onClick={handleCustomerForm} className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 sm:py-2.5 md:py-3 px-4 sm:px-6 rounded-lg text-xs sm:text-sm md:text-base transition duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 flex items-center justify-center" >
+                          Continue
                         </button>
                       </div>
                     </div>

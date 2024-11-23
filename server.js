@@ -691,7 +691,22 @@ const bookingSchema = new mongoose.Schema({
   },
   paymentId: { type: String, required: true },
   date: { type: Date, default: Date.now }
-}); const Booking = mongoose.model('Booking', bookingSchema); app.post('/api/bookings', async (req, res) => {
+}); const Booking = mongoose.model('Booking', bookingSchema);
+app.get('/api/bookings/customer/:email', async (req, res) => {
+  try {
+    const { email } = req.params;
+    const bookings = await Booking.find({ 'customer.email': email }).populate('car');
+    if (!bookings || bookings.length === 0) {
+      return res.status(404).json({ error: 'No bookings found for this customer' });
+    } const validBookings = bookings.filter((booking) => booking.car !== null);
+    res.json(validBookings);
+  } catch (error) {
+    console.error('Error fetching bookings:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+app.post('/api/bookings', async (req, res) => {
   try {
     console.log('customer')
     const { car, customer, paymentId } = req.body;
@@ -721,6 +736,21 @@ app.get('/api/bookings', async (req, res) => {
     res.status(500).json([]);
   }
 });
+
+app.get('/api/bookings/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const booking = await Booking.findById(id).populate('car'); // Populate car details
+    if (!booking) {
+      return res.status(404).json({ error: 'Booking not found' });
+    }
+    res.json(booking);
+  } catch (error) {
+    console.error('Error fetching booking:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 // Delete a booking
 app.delete('/api/bookings/:id', async (req, res) => {
   try {

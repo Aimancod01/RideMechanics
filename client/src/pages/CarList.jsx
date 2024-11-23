@@ -13,7 +13,7 @@ const CarList = () => {
   const { addToCart } = useContext(CartContext);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-
+  const [bookings, setBookings] = useState([]);
 
   useEffect(() => {
     const fetchCars = async () => {
@@ -28,7 +28,7 @@ const CarList = () => {
     fetchCars();
   }, []);
   const navigate = useNavigate();
-
+  
 
   const handleCustomerForm = () => {
     if (selectedCar) {
@@ -51,13 +51,22 @@ const CarList = () => {
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
   };
-
+  const handleViewBookings = () => {
+   
+    navigate('/getBookingByEmail');
+  };
   return (
     <div className="max-w-7xl mx-auto p-4"><SearchForm />
       <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">  <button
+              onClick={handleViewBookings}
+              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 sm:py-2.5 md:py-3 px-4 sm:px-6 rounded-lg text-xs sm:text-sm md:text-base transition duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 flex items-center justify-center"
+            >
+              View Bookings
+            </button>
           <h2 className="text-4xl font-extrabold text-orange-600 mb-8 text-center">Car Rentals</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        
             {cars.map(car => (
               <div key={car._id} className="bg-white rounded-xl shadow-lg overflow-hidden transform transition duration-300 hover:scale-105">
                 <img src={`http://localhost:5000/${car.image}`} alt={car.carName} className="w-full h-48 object-cover" />
