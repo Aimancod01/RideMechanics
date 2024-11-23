@@ -558,8 +558,10 @@ app.post('/create-checkout-session', async (req, res) => {
       Thank you for booking with us! We are excited to confirm your reservation for the ${car.carName}.
       Your payment of Rs${amount / 100} has been successfully processed. Here are the details of your booking:
       
+      
+      - **Car Name**: ${car.carName}
       - **Car Model**: ${car.carModel}
-      - **Category**: ${car.carNumber}
+      - **Car Number**: ${car.carNumber}
 
 
       We look forward to providing you with a smooth and enjoyable experience. If you have any questions, feel free to contact us.

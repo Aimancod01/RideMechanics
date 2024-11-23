@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import axios from 'axios'; 
+import axios from 'axios';
 import { Link } from 'react-router-dom';
 import Modal from 'react-modal'; import SearchForm from '../components/Search';
 import { useNavigate } from 'react-router-dom'; import { CartContext } from '../components/CartContext';
@@ -110,68 +110,68 @@ const CarList = () => {
               contentLabel="Car Preview"
               className="fixed inset-0 flex items-center justify-center p-4 bg-black bg-opacity-50"
             ><div className="sm:max-w-[700px] bg-white">
-              <div className="bg-white rounded-lg overflow-hidden shadow-xl max-w-3xl w-full">
-                <div className="p-4">
-                  <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-3xl font-bold text-orange-600">Car Preview</h2>
-                    <p>Review the details of your selected car</p>
+                <div className="bg-white rounded-lg overflow-hidden shadow-xl max-w-3xl w-full">
+                  <div className="p-4">
+                    <div className="flex justify-between items-center mb-4">
+                      <h2 className="text-3xl font-bold text-orange-600">Car Preview</h2>
+                      <p>Review the details of your selected car</p>
 
-                    <button onClick={closeModal} className="text-gray-500 hover:text-gray-700">
-                      <i className="fas fa-times"></i>
-                    </button>
-                  </div>
-                  <div className="flex"><div className="grid gap-6 py-4"> <div className="flex flex-col md:flex-row gap-6">
-                    <img src={`http://localhost:5000/${selectedCar.image}`} alt={selectedCar.carName} className="w-full md:w-1/3 h-48 object-cover rounded-lg" />
-                    <div className="w-2/3 pl-4">
-                      <h3 className="text-2xl font-bold text-gray-900 mb-2">{selectedCar.carName}</h3>
-                      <p className="text-gray-600 mb-4">{selectedCar.carModel}</p>
-                      <div className="grid grid-cols-2 gap-4"><div className="flex items-center space-x-2 text-gray-600">
-
-                        <DoorClosed className="w-5 h-5 text-orange-500" /><span> {selectedCar.doors}
-                        </span> </div> <div className="flex items-center space-x-2 text-gray-600">
-                          <Users className="w-5 h-5 text-orange-500" />
-                          <span >  {selectedCar.seats}
-                          </span> </div> <div className="flex items-center space-x-2 text-gray-600"> <Gauge className="w-5 h-5 text-orange-500" />
-                          <span >
-                            {selectedCar.transmission === 'Manual' ? 'Manual' : 'Automatic'}
-                          </span></div> <div className="flex items-center space-x-2 text-gray-600">  <Wind className="w-5 h-5 text-orange-500" />
-                          <span >
-                            {selectedCar.ac ? 'AC' : 'Non-AC'}
-                          </span>
-                        </div> </div>
-                      <div className="mt-4 space-x-2">
-                        <span className="bg-blue-100 text-blue-500 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">{selectedCar.category}</span>
-                        <span className="bg-green-100 text-green-500 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">Theft Protection</span>
-                        <span className="bg-purple-100 text-purple-500 text-xs font-semibold px-2.5 py-0.5 rounded">Clean Interior/Exterior</span>
-                      </div>
-                      <p className="mt-4 text-gray-600">
-                        Days: {selectedCar.days} | Pickup Date: 11 Jul, 2024 10:00 pm | Dropoff Date: 12 Jul, 2024 11:00 pm
-                      </p>
-                    </div>
-                  </div>
-                    <div className="mt-4">
-                      <h4 className="text-xl font-bold text-gray-900 mb-2">Features</h4>
-                      <ul className="grid grid-cols-2 gap-2">
-                        <li className="flex items-center space-x-2 text-gray-600"> <Shield className="w-5 h-5 text-green-500" />Theft Protection</li>
-                        <li className="flex items-center space-x-2 text-gray-600">  <Sparkles className="w-5 h-5 text-purple-500" />Clean Interior/Exterior</li>
-                        <li className="flex items-center space-x-2 text-gray-600">  <FileText className="w-5 h-5 text-blue-500" />Cancellation Policies</li>
-                        <li className="flex items-center space-x-2 text-gray-600"> <AlertTriangle className="w-5 h-5 text-yellow-500" />Terms & Conditions</li>
-                      </ul>
-                    </div>
-                    <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-                      <span className="text-2xl font-bold text-orange-600">Total Rs {selectedCar.price}</span> <div className="flex gap-4">
-                      <button onClick={handleCustomerForm} className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded" >
-                        continue
+                      <button onClick={closeModal} className="text-gray-500 hover:text-gray-700">
+                        <i className="fas fa-times"></i>
                       </button>
-                      <button onClick={() => handleAddToCart(selectedCar)}
-                        className="bg-green-500 hover:bg-green-600  text-white font-semibold py-2 px-4 rounded "
-                      >
-                        Add to Cart
-                      </button> </div> </div>
-                  </div> </div>
-                </div> </div></div>
+                    </div>
+                    <div className="flex"><div className="grid gap-6 py-4"> <div className="flex flex-col md:flex-row gap-6">
+                      <img src={`http://localhost:5000/${selectedCar.image}`} alt={selectedCar.carName} className="w-full md:w-1/3 h-48 object-cover rounded-lg" />
+                      <div className="w-2/3 pl-4">
+                        <h3 className="text-2xl font-bold text-gray-900 mb-2">{selectedCar.carName}</h3>
+                        <p className="text-gray-600 mb-4">{selectedCar.carModel}</p>
+                        <div className="grid grid-cols-2 gap-4"><div className="flex items-center space-x-2 text-gray-600">
+
+                          <DoorClosed className="w-5 h-5 text-orange-500" /><span> {selectedCar.doors}
+                          </span> </div> <div className="flex items-center space-x-2 text-gray-600">
+                            <Users className="w-5 h-5 text-orange-500" />
+                            <span >  {selectedCar.seats}
+                            </span> </div> <div className="flex items-center space-x-2 text-gray-600"> <Gauge className="w-5 h-5 text-orange-500" />
+                            <span >
+                              {selectedCar.transmission === 'Manual' ? 'Manual' : 'Automatic'}
+                            </span></div> <div className="flex items-center space-x-2 text-gray-600">  <Wind className="w-5 h-5 text-orange-500" />
+                            <span >
+                              {selectedCar.ac ? 'AC' : 'Non-AC'}
+                            </span>
+                          </div> </div>
+                        <div className="mt-4 space-x-2">
+                          <span className="bg-blue-100 text-blue-500 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">{selectedCar.category}</span>
+                          <span className="bg-green-100 text-green-500 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">Theft Protection</span>
+                          <span className="bg-purple-100 text-purple-500 text-xs font-semibold px-2.5 py-0.5 rounded">Clean Interior/Exterior</span>
+                        </div>
+                        {/* <p className="mt-4 text-gray-600">
+                        Days: {selectedCar.days} 
+                      </p> */}
+                      </div>
+                    </div>
+                      <div className="mt-4">
+                        <h4 className="text-xl font-bold text-gray-900 mb-2">Features</h4>
+                        <ul className="grid grid-cols-2 gap-2">
+
+                          <li className="flex items-center space-x-2 text-gray-600">  <Sparkles className="w-5 h-5 text-purple-500" />Clean Interior/Exterior</li>
+                          <li className="flex items-center space-x-2 text-gray-600">  <FileText className="w-5 h-5 text-blue-500" />Cancellation Policies</li>
+                          <li className="flex items-center space-x-2 text-gray-600"> <AlertTriangle className="w-5 h-5 text-yellow-500" />Terms & Conditions</li>
+                        </ul>
+                      </div>
+                      <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+                        <span className="text-2xl font-bold text-orange-600">Total Rs {selectedCar.price}</span> <div className="flex gap-4">
+                          <button onClick={handleCustomerForm} className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded" >
+                            continue
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </Modal>
-          )}<div className="flex justify-center mt-6">
+          )} <div className="flex justify-center mt-6">
             <button
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
@@ -188,7 +188,9 @@ const CarList = () => {
               Next
             </button>
           </div>
-        </div > </div > </div >
+        </div >
+      </div >
+    </div >
   );
 };
 
