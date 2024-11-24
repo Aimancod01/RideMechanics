@@ -1,5 +1,5 @@
 import express from "express";
-const app = express(); import Package from './models/Package.js';
+const app = express(); import Package from './models/Package.js';import TourPayment from './models/Payment.js';
 import dotenv from "dotenv"; import nodemailer from 'nodemailer';import TourCustomer from './models/TourCustomer.js';
 import morgan from "morgan"; import Stripe from 'stripe'; import path from 'path';
 import loginRouter from "./routes/loginRouter.js"; import cors from 'cors';
@@ -1182,20 +1182,60 @@ app.post('/api/tourCustomer', async (req, res) => {
 });
 app.post("/api/tour-package-payment", async (req, res) => {
   try {
-      const { amount } = req.body;
+      const { amount, customerName, customerEmail } = req.body;
 
       const paymentIntent = await stripe.paymentIntents.create({
           amount, // Amount in cents
           currency: "usd",
           payment_method_types: ["card"],
+          metadata: { customerName, customerEmail },
       });
+      const transporter = nodemailer.createTransport({
+        service: "Gmail",
+        auth: {
+            user: "umar1466088@gmail.com",
+            pass: "vawj nujs lbfr auda",
+        },
+    });
 
-      res.json({ clientSecret: paymentIntent.client_secret });
+    const mailOptions = {
+        from: "umar1466088@gmail.com",
+        to: customerEmail,
+        subject: "Payment Confirmation",
+        text: `Dear ${customerName},\n\nYour payment of $${amount / 100} was successful. Thank you for choosing our service!\n\nBest regards,\nYour Company`,
+    };
+
+    await transporter.sendMail(mailOptions);
+      res.json({ clientSecret: paymentIntent.client_secret, paymentId: paymentIntent.id  });
   } catch (error) {
       console.error("Error creating payment intent:", error);
       res.status(500).json({ error: "Failed to create payment intent" });
   }
+});app.post("/api/save-payment", async (req, res) => {
+  const { customerId, paymentId, packageId, quantity, totalPrice } = req.body;
+
+  try {  // Find the customer
+    const customer = await TourCustomer.findById(customerId);
+    if (!customer) {
+      return res.status(404).json({ error: "Customer not found." });
+    }
+      const paymentRecord = new TourPayment({
+          customerId,
+          paymentId,
+          packageId,
+          quantity,
+          totalPrice,
+      });
+
+      await paymentRecord.save();
+
+      res.status(201).json({ message: "Payment saved successfully!" });
+  } catch (error) {
+      console.error("Error saving payment:", error);
+      res.status(500).json({ error: "Failed to save payment" });
+  }
 });
+
 try {
   await mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,

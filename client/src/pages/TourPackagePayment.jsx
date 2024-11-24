@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function TourPackagePayment() {
     const { state } = useLocation();
@@ -25,6 +27,7 @@ function TourPackagePayment() {
             alert("Stripe is not loaded yet!");
             return;
         }
+console.log('ont',customer.firstName)
 
         try {
             const response = await fetch("http://localhost:5000/api/tour-package-payment", {
@@ -33,11 +36,12 @@ function TourPackagePayment() {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    amount: totalPrice * 100,
+                    amount: totalPrice * 100,  customerName: `${customer.firstName} ${customer.lastName}`,
+                    customerEmail: customer.email,
                 }),
             });
-
-            const { clientSecret } = await response.json();
+console.log('resp',response.data)
+            const { clientSecret, paymentId } = await response.json();
 
             const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
                 payment_method: {
@@ -51,19 +55,35 @@ function TourPackagePayment() {
 
             if (error) {
                 console.error("Payment failed:", error.message);
-                alert("Payment failed. Please try again.");
+                toast.error("Payment failed. Please try again.");
             } else if (paymentIntent.status === "succeeded") {
-                alert("Payment successful!");
+                toast.success("Payment successful!");
                 console.log("Payment successful:", paymentIntent);
+
+                // Save payment ID to the database
+                await fetch("http://localhost:5000/api/save-payment", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        customerId: customer._id,
+                        paymentId: paymentIntent.id,
+                        packageId: selectedPackage._id,
+                        quantity,
+                        totalPrice,
+                    }),
+                });
             }
         } catch (error) {
             console.error("Error during payment:", error);
-            alert("An error occurred during payment. Please try again.");
+            toast.error("An error occurred during payment. Please try again.");
         }
     };
 
     return (
         <div className="max-w-lg mx-auto mt-8 p-6 bg-white shadow-lg rounded-lg">
+             <ToastContainer />
             <h2 className="text-2xl font-bold mb-4 text-orange-600 text-center">Payment Page</h2>
             {selectedPackage && (
                 <div className="mb-6">
