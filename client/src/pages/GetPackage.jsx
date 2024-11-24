@@ -5,7 +5,7 @@ import { PulseLoader } from "react-spinners";
 function GetPackageList() {
     const [packages, setPackages] = useState([]);
     const [search, setSearch] = useState("");
-    const [price, setPrice] = useState(""); 
+   
     const [loading, setLoading] = useState(true); // Add loading state
     const navigate = useNavigate();
 
@@ -47,7 +47,9 @@ function GetPackageList() {
                 setLoading(false);
             });
     };
-
+    const handleBuy = (pkg) => {
+        navigate("/tourCustomerForm", { state: { selectedPackage: pkg } });
+    };
     return (
         <div className="py-8 px-4  min-h-screen flex flex-col items-center">
             <div className="mb-6 text-center ">
@@ -95,7 +97,7 @@ function GetPackageList() {
                                     <p className="text-gray-600"><strong>Car:</strong> {pkg.carInfo.carName} - {pkg.carInfo.model}</p>
                                     <p className="text-gray-600"><strong>Color:</strong> {pkg.carInfo.color}</p>
                                     <p className="text-gray-600"><strong>Seater:</strong> {pkg.carInfo.seater}</p>
-                                    <button
+                                    <button    onClick={() => handleBuy(pkg)}
                 type="submit"
                 className="w-full p-3 mt-4 text-white bg-orange-500 rounded-md hover:bg-orange-600 transition duration-200 ease-in-out"
             >

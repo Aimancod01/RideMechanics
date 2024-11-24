@@ -1,6 +1,6 @@
 import express from "express";
 const app = express(); import Package from './models/Package.js';
-import dotenv from "dotenv"; import nodemailer from 'nodemailer';
+import dotenv from "dotenv"; import nodemailer from 'nodemailer';import TourCustomer from './models/TourCustomer.js';
 import morgan from "morgan"; import Stripe from 'stripe'; import path from 'path';
 import loginRouter from "./routes/loginRouter.js"; import cors from 'cors';
 import mongoose from "mongoose"; import bodyParser from 'body-parser';
@@ -1152,7 +1152,50 @@ app.get('/api/search', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+app.post('/api/tourCustomer', async (req, res) => {
+  try {
+    const { firstName, lastName, email, cnic, address, packageId } = req.body;
 
+    // Find the selected package
+    const selectedPackage = await Package.findById(packageId);
+    if (!selectedPackage) {
+      return res.status(404).json({ error: 'Package not found' });
+    }
+
+    // Create a new customer document
+    const newCustomer = new TourCustomer({
+      firstName,
+      lastName,
+      email,
+      cnic,
+      address,
+      package: packageId,
+    });
+
+    // Save the customer to the database
+    await newCustomer.save();
+    res.status(201).json({ message: 'Customer information saved successfully!' });
+  } catch (error) {
+    console.error('Error saving customer:', error);
+    res.status(500).json({ error: 'Error saving customer information' });
+  }
+});
+app.post("/api/tour-package-payment", async (req, res) => {
+  try {
+      const { amount } = req.body;
+
+      const paymentIntent = await stripe.paymentIntents.create({
+          amount, // Amount in cents
+          currency: "usd",
+          payment_method_types: ["card"],
+      });
+
+      res.json({ clientSecret: paymentIntent.client_secret });
+  } catch (error) {
+      console.error("Error creating payment intent:", error);
+      res.status(500).json({ error: "Failed to create payment intent" });
+  }
+});
 try {
   await mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,

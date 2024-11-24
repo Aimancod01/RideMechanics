@@ -15,7 +15,7 @@ import Register from "./pages/Register";
 import DriverCard from "./components/DriverCard";
 import Dashboard from "./pages/Dashboard";
 import CarListDashboard from "./Admin/Cars";
-
+import TourCustomerForm from "./pages/TourCustomerForm.jsx";
 import GetPackageList from "./pages/GetPackage.jsx";
 import BookingList from "./Admin/BookingList";
 import Sidebar from "./pages/Sidebar";
@@ -40,6 +40,7 @@ import EditCar from "./Admin/EditCar";
 import Confirmation from "./components/Confirmation";
 import PackageList from "./Admin/PackageList.jsx";
 import UploadPackage from "./Admin/UploadPackage.jsx";
+import PaymentWrapper from "./pages/PaymentWrapper.jsx";
 import ProtectedRoute from "./pages/ProtectedRoutes.jsx";import CarForm from "./Admin/CarForm";
 function App() {
   const rentalId = "unique-rental-id"; // Replace with actual rentalIdTourPackageForm
@@ -192,6 +193,12 @@ function App() {
         {
           path: "/getpackageList",
           element: <GetPackageList />,
+        },{
+          path: "/tourPackagePayment",
+          element: <PaymentWrapper />,
+        }, {
+          path: "/tourCustomerForm",
+          element: <TourCustomerForm />,
         }, {
           path: "/getBookingByEmail",
           element: <GetBookingsByEmail />,
