@@ -48,137 +48,118 @@ const RecenterMap = ({ location }) => {
 
 const RoadMap = () => {
   const [userLocation, setUserLocation] = useState([31.5204, 74.3587]); // Default to Lahore
+  const [mechanicLocation, setMechanicLocation] = useState(null); // Mechanic location
   const [selectedMechanic, setSelectedMechanic] = useState(null);
   const [activeTab, setActiveTab] = useState("list"); // Manage tabs
-  const [carDetails, setCarDetails] = useState({ model: "", make: "", issue: "" });
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState({
-    conversation: [],
-    newMessage: "",
-  });
 
-  const sendMessage = (e) => {
-    e.preventDefault();
-    if (!messages.newMessage.trim()) return;
+  const [userRequests, setUserRequests] = useState([]);
+  const userInfo = JSON.parse(localStorage.getItem("userinfo")); // Get user info from local storage
+  const { userType } = userInfo || {}; // Extract userType
 
-    setMessages((prev) => ({
-      conversation: [...prev.conversation, { text: prev.newMessage, sender: "user" }],
-      newMessage: "",
-    }));
-
-    // Simulate a mechanic response after a delay
-    setTimeout(() => {
-      setMessages((prev) => ({
-        ...prev,
-        conversation: [...prev.conversation, { text: `Mechanic ${selectedMechanic.name} is typing...`, sender: "mechanic" }],
-      }));
-    }, 1000);
-  };
-
-  // Get user location
+  // Fetch location based on user type
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
-      (position) => setUserLocation([position.coords.latitude, position.coords.longitude]),
-      () => console.error("Error fetching user location"),
+      (position) => {
+        if (userType === "mechanic") {
+          setMechanicLocation([position.coords.latitude, position.coords.longitude]);
+        } else {
+          setUserLocation([position.coords.latitude, position.coords.longitude]);
+        }
+      },
+      () => console.error("Error fetching location"),
     );
-  }, []);
+  }, [userType]);
 
-  // Handle service request submission
-  const handleRequest = (e) => {
-    e.preventDefault();
-    if (!carDetails.model || !carDetails.make || !carDetails.issue) {
-      setMessage("Please fill out all car details.");
-      return;
+  // Example User Requests
+  useEffect(() => {
+    if (userType === "mechanic") {
+      setUserRequests([
+        { id: 1, name: "Alice", location: [31.53, 74.358] },
+        { id: 2, name: "Bob", location: [31.52, 74.35] },
+      ]);
     }
-    setLoading(true);
-    setMessage("");
-    setTimeout(() => {
-      setLoading(false);
-      setMessage(`Request sent to ${selectedMechanic.name} successfully!`);
-      setCarDetails({ model: "", make: "", issue: "" });
-    }, 2000);
-  };
+  }, [userType]);
 
   return (
     <div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 my-8">
-        {/* Mechanics List and Details */}
-        <div className="flex justify-center items-center">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-full lg:w-4/4 flex flex-col min-h-[400px]">
-            {/* Tabs */}
-            <div className="flex border-b mb-4">
-              <button className={`px-4 py-2 ${activeTab === "list" ? "text-orange-600 font-bold border-b-2 border-orange-600" : "text-gray-500"}`} onClick={() => setActiveTab("list")}>
-                All Mechanics
-              </button>
-              <button className={`px-4 py-2 ${activeTab === "detail" ? "text-orange-600 font-bold border-b-2 border-orange-600" : "text-gray-500"}`} onClick={() => setActiveTab("detail")}>
-                Mechanic Details
-              </button>
-            </div>
+      {userType === "user" ? (
+        <div className="grid grid-cols-1 lg:grid-cols-2 my-8">
+          {/* Mechanics List and Details */}
+          <div className="flex justify-center items-center">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-full lg:w-4/4 flex flex-col min-h-[400px]">
+              {/* Tabs */}
+              <div className="flex border-b mb-4">
+                <button className={`px-4 py-2 ${activeTab === "list" ? "text-orange-600 font-bold border-b-2 border-orange-600" : "text-gray-500"}`} onClick={() => setActiveTab("list")}>
+                  All Mechanics
+                </button>
+                <button className={`px-4 py-2 ${activeTab === "detail" ? "text-orange-600 font-bold border-b-2 border-orange-600" : "text-gray-500"}`} onClick={() => setActiveTab("detail")}>
+                  Mechanic Details
+                </button>
+              </div>
 
-            {/* Tab Content */}
-            {activeTab === "list" ? (
-              <div className="flex flex-wrap gap-4 justify-center">
+              {activeTab === "list" ? (
                 <MechanicCards mechanics={mechanics} selectMechanic={setSelectedMechanic} />
-              </div>
-            ) : selectedMechanic ? (
-              <MechanicProfile mechanic={selectedMechanic} messages={messages.conversation} setMessages={setMessages} sendMessage={sendMessage} />
-            ) : (
-              <div className="text-center text-orange-600 font-semibold">
-                <p>No mechanic selected.</p>
-                <p>Select a mechanic from the list or map to view their details.</p>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Map */}
-        <MapContainer center={userLocation} zoom={13} scrollWheelZoom={false} className="h-[500px] w-full lg:w-4/4 lg:h-full min-h-[400px]">
-          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="&copy; OpenStreetMap contributors" />
-
-          {/* Automatically Recenter Map */}
-          <RecenterMap location={userLocation} />
-
-          {/* User Location Marker */}
-          <Marker position={userLocation} icon={userIcon}>
-            <Popup>Your Location</Popup>
-          </Marker>
-          <Circle
-            center={userLocation}
-            radius={500}
-            pathOptions={{
-              color: "orange",
-              fillColor: "orange",
-              fillOpacity: 0.3,
-            }}
-          />
-
-          {/* Mechanics Markers */}
-          {mechanics.map((mechanic) => (
-            <Marker
-              key={mechanic.id}
-              position={[mechanic.lat, mechanic.lng]}
-              icon={mechanicIcon}
-              eventHandlers={{
-                click: () => {
-                  setSelectedMechanic(mechanic); // Set the selected mechanic when the marker is clicked
-                  setActiveTab("detail"); // Switch to the detail tab
-                },
-              }}
-            >
-              <Popup>
-                <div>
-                  <strong>{mechanic.name}</strong>
+              ) : selectedMechanic ? (
+                <MechanicProfile mechanic={selectedMechanic} />
+              ) : (
+                <div className="text-center text-orange-600 font-semibold">
+                  <p>No mechanic selected.</p>
                 </div>
-              </Popup>
-            </Marker>
-          ))}
-        </MapContainer>
-      </div>
+              )}
+            </div>
+          </div>
 
-      {/* Loading and Message Feedback */}
-      {loading && <div className="mt-4 p-4 bg-orange-200 text-orange-800 rounded-md text-center">Sending request...</div>}
-      {message && <div className="mt-4 p-4 bg-green-200 text-green-800 rounded-md text-center">{message}</div>}
+          {/* Map */}
+          <MapContainer center={userLocation} zoom={13} className="h-[500px] w-full lg:w-4/4 lg:h-full">
+            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="&copy; OpenStreetMap contributors" />
+            <RecenterMap location={userLocation} />
+            <Marker position={userLocation} icon={userIcon}>
+              <Popup>Your Location</Popup>
+            </Marker>
+            {mechanics.map((mechanic) => (
+              <Marker key={mechanic.id} position={[mechanic.lat, mechanic.lng]} icon={mechanicIcon}>
+                <Popup>{mechanic.name}</Popup>
+              </Marker>
+            ))}
+          </MapContainer>
+        </div>
+      ) : userType === "mechanic" ? (
+        <div className="grid grid-cols-1 lg:grid-cols-2 my-8">
+          <div className="flex flex-col gap-4">
+            <div className="bg-white p-6 rounded-lg shadow-lg">
+              <h2 className="text-xl font-semibold text-orange-600">Your Location</h2>
+              <p>Lat: {mechanicLocation?.[0]}</p>
+              <p>Lng: {mechanicLocation?.[1]}</p>
+            </div>
+            <div className="bg-white p-6 rounded-lg shadow-lg">
+              <h2 className="text-xl font-semibold text-orange-600">User Requests</h2>
+              {userRequests.map((req) => (
+                <div key={req.id} className="flex justify-between">
+                  <p>
+                    {req.name} needs help at location: {req.location.join(", ")}
+                  </p>
+                  <button className="bg-orange-600 text-white px-3 py-1 rounded">Accept</button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <MapContainer center={mechanicLocation || [31.5204, 74.3587]} zoom={13} className="h-[500px] w-full lg:w-4/4 lg:h-full">
+            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="&copy; OpenStreetMap contributors" />
+            <RecenterMap location={mechanicLocation} />
+            {mechanicLocation && (
+              <Marker position={mechanicLocation} icon={mechanicIcon}>
+                <Popup>Your Location</Popup>
+              </Marker>
+            )}
+            {userRequests.map((req) => (
+              <Marker key={req.id} position={req.location} icon={userIcon}>
+                <Popup>{req.name}</Popup>
+              </Marker>
+            ))}
+          </MapContainer>
+        </div>
+      ) : null}
     </div>
   );
 };

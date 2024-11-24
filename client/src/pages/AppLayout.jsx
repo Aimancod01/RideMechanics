@@ -6,7 +6,7 @@ function AppLayout() {
   return (
     <>
       <Header />
-      <main className="bg-gray-100 h-auto ">
+      <main className="bg-gray-100 min-h-screen ">
         <Outlet />
       </main>
       <Footer />
