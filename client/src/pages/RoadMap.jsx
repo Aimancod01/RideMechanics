@@ -53,6 +53,28 @@ const RoadMap = () => {
   const [carDetails, setCarDetails] = useState({ model: "", make: "", issue: "" });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState({
+    conversation: [],
+    newMessage: "",
+  });
+
+  const sendMessage = (e) => {
+    e.preventDefault();
+    if (!messages.newMessage.trim()) return;
+
+    setMessages((prev) => ({
+      conversation: [...prev.conversation, { text: prev.newMessage, sender: "user" }],
+      newMessage: "",
+    }));
+
+    // Simulate a mechanic response after a delay
+    setTimeout(() => {
+      setMessages((prev) => ({
+        ...prev,
+        conversation: [...prev.conversation, { text: `Mechanic ${selectedMechanic.name} is typing...`, sender: "mechanic" }],
+      }));
+    }, 1000);
+  };
 
   // Get user location
   useEffect(() => {
@@ -100,7 +122,7 @@ const RoadMap = () => {
                 <MechanicCards mechanics={mechanics} selectMechanic={setSelectedMechanic} />
               </div>
             ) : selectedMechanic ? (
-              <MechanicProfile mechanic={selectedMechanic} carDetails={carDetails} setCarDetails={setCarDetails} handleRequest={handleRequest} />
+              <MechanicProfile mechanic={selectedMechanic} messages={messages.conversation} setMessages={setMessages} sendMessage={sendMessage} />
             ) : (
               <div className="text-center text-orange-600 font-semibold">
                 <p>No mechanic selected.</p>
@@ -133,8 +155,22 @@ const RoadMap = () => {
 
           {/* Mechanics Markers */}
           {mechanics.map((mechanic) => (
-            <Marker key={mechanic.id} position={[mechanic.lat, mechanic.lng]} icon={mechanicIcon}>
-              <Popup>{mechanic.name}</Popup>
+            <Marker
+              key={mechanic.id}
+              position={[mechanic.lat, mechanic.lng]}
+              icon={mechanicIcon}
+              eventHandlers={{
+                click: () => {
+                  setSelectedMechanic(mechanic); // Set the selected mechanic when the marker is clicked
+                  setActiveTab("detail"); // Switch to the detail tab
+                },
+              }}
+            >
+              <Popup>
+                <div>
+                  <strong>{mechanic.name}</strong>
+                </div>
+              </Popup>
             </Marker>
           ))}
         </MapContainer>
