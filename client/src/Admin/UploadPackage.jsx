@@ -1,49 +1,54 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 function UploadPackage() {
   const [formData, setFormData] = useState({
     packageName: '',
+    description: '',
     price: '',
-    date: '',
-    timing: '',
-    carName: '',
-    carModel: '',
-    carColor: '',
-    carSeater: '',
+    departureDate: new Date(),
+    departureTime: '',
+    arrivalDate: new Date(),
+    arrivalTime: '',
+    location: '',
     picture: null,
   });
   const [message, setMessage] = useState(null);  // Added state for message
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleFileChange = (e) => {
     setFormData({ ...formData, picture: e.target.files[0] });
   };
-
+  const handleDateChange = (name, date) => {
+    setFormData({ ...formData, [name]: date });
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formDataToSend = new FormData();
     formDataToSend.append('packageName', formData.packageName);
+    formDataToSend.append('description', formData.description);
     formDataToSend.append('price', formData.price);
-    formDataToSend.append('date', formData.date);
-    formDataToSend.append('timing', formData.timing);
-    formDataToSend.append('carName', formData.carName);
-    formDataToSend.append('model', formData.carModel);
-    formDataToSend.append('color', formData.carColor);
-    formDataToSend.append('seater', formData.carSeater);
-    formDataToSend.append('picture', formData.picture);
+    formDataToSend.append('departureDate', formData.departureDate);
+    formDataToSend.append('departureTime', formData.departureTime);
+    formDataToSend.append('arrivalDate', formData.arrivalDate);
+    formDataToSend.append('arrivalTime', formData.arrivalTime);
+    formDataToSend.append('location', formData.location);
+    if (formData.picture) {
+      formDataToSend.append('picture', formData.picture);
+    }
 
     try {
       const response = await axios.post('http://localhost:5000/api/packages', formDataToSend, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-      setMessage({ type: 'success', text: 'Package uploaded successfully!' });
+      console.log(response.data)
+      setMessage( 'Package uploaded successfully!' );
     } catch (error) {
       console.error('Error uploading package:', error);
-      setMessage({ type: 'error', text: 'Failed to upload package. Please try again.' });  // Show error 
+      setMessage('Failed to upload package. Please try again.');  // Show error 
     }
   };
 
@@ -52,26 +57,14 @@ function UploadPackage() {
       <h1 className="text-2xl font-bold text-center text-orange-600 mb-4">Upload Car Rental Package</h1>
       {message && (
         <div
-          className={`p-4 mb-4 rounded-md ${
-            message.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-          }`}
+          className={`p-4 mb-4 rounded-md ${message.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+            }`}
         >
           {message.text}
         </div>
       )}
-      <form className="space-y-6" onSubmit={handleSubmit} encType="multipart/form-data">
-        <div className="form-group">
-          <label htmlFor="picture" className="block text-gray-700 font-medium">Upload Picture:</label>
-          <input
-            type="file"
-            id="picture"
-            name="picture"
-            accept="image/*"
-            onChange={handleFileChange}
-            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-          />
-        </div>
-
+      <form className="space-y-6" onSubmit={handleSubmit} >
+        
         <div className="form-group">
           <label htmlFor="packageName" className="block text-gray-700 font-medium">Package Name:</label>
           <input
@@ -79,7 +72,7 @@ function UploadPackage() {
             id="packageName"
             name="packageName"
             value={formData.packageName}
-            onChange={handleInputChange}
+            onChange={handleChange}
             className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
             placeholder="Enter package name"
             required
@@ -87,110 +80,80 @@ function UploadPackage() {
         </div>
 
         <div className="form-group">
-          <label htmlFor="price" className="block text-gray-700 font-medium">Price:</label>
-          <input
-            type="number"
-            id="price"
-            name="price"
-            value={formData.price}
-            onChange={handleInputChange}
-            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-            placeholder="Enter price"
-            required
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="date" className="block text-gray-700 font-medium">Date:</label>
-          <input
-            type="date"
-            id="date"
-            name="date"
-            value={formData.date}
-            onChange={handleInputChange}
-            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-            required
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="timing" className="block text-gray-700 font-medium">Timing:</label>
+          <label htmlFor="description" className="block text-gray-700 font-medium">Description:</label>
           <input
             type="text"
-            id="timing"
-            name="timing"
-            value={formData.timing}
-            onChange={handleInputChange}
+            id="description"
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
             className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-            placeholder="Enter timing"
+            placeholder="Enter description"
             required
           />
         </div>
 
-        <h2 className="text-xl font-semibold text-orange-600 mt-6">Car Information</h2>
+        <div className="mb-4">
+          <label className="block text-sm font-bold mb-2">Departure Date</label>
+          <DatePicker
+            selected={formData.departureDate}
+            onChange={(date) => handleDateChange('departureDate', date)}
+            className="w-full px-3 py-2 border"
+          />
+        </div>
 
-        <div className="form-group">
-          <label htmlFor="carName" className="block text-gray-700 font-medium">Car Name:</label>
+        <div className="mb-4">
+          <label className="block text-sm font-bold mb-2">Departure Time</label>
           <input
             type="text"
-            id="carName"
-            name="carName"
-            value={formData.carName}
-            onChange={handleInputChange}
-            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-            placeholder="Enter car name"
+            name="departureTime"
+            value={formData.departureTime}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border"
             required
           />
         </div>
 
-        <div className="form-group">
-          <label htmlFor="carModel" className="block text-gray-700 font-medium">Car Model:</label>
+        <div className="mb-4">
+          <label className="block text-sm font-bold mb-2">Arrival Date</label>
+          <DatePicker
+            selected={formData.arrivalDate}
+            onChange={(date) => handleDateChange('arrivalDate', date)}
+            className="w-full px-3 py-2 border"
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-sm font-bold mb-2">Arrival Time</label>
           <input
             type="text"
-            id="carModel"
-            name="carModel"
-            value={formData.carModel}
-            onChange={handleInputChange}
-            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-            placeholder="Enter car model"
+            name="arrivalTime"
+            value={formData.arrivalTime}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border"
             required
           />
         </div>
-
-        <div className="form-group">
-          <label htmlFor="carColor" className="block text-gray-700 font-medium">Car Color:</label>
-          <input
-            type="text"
-            id="carColor"
-            name="carColor"
-            value={formData.carColor}
-            onChange={handleInputChange}
-            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-            placeholder="Enter car color"
-            required
-          />
-        </div>
-
-        <div className="form-group">
-          <label htmlFor="carSeater" className="block text-gray-700 font-medium">Seater (No. of Seats):</label>
-          <input
-            type="number"
-            id="carSeater"
-            name="carSeater"
-            value={formData.carSeater}
-            onChange={handleInputChange}
-            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-            placeholder="Enter number of seats"
-            required
-          />
-        </div>
+        <div className="mb-4">
+        <label className="block text-sm font-bold mb-2">Location </label>
+        <input
+          type="text"
+          name="location"
+          value={formData.location}
+          onChange={handleChange}
+          className="w-full px-3 py-2 border"
+        />
+      </div>
+      <div className="mb-4">
+        <label className="block text-sm font-bold mb-2">Picture</label>
+        <input type="file" name="picture" onChange={handleFileChange} className="w-full px-3 py-2 border" />
+      </div>
 
         <div className="form-group">
           <button
             type="submit"
             className="w-full p-3 mt-4 text-white bg-orange-500 rounded-md hover:bg-orange-600 transition duration-200 ease-in-out"
           >
-            Submit
+            Create Package
           </button>
         </div>
       </form>

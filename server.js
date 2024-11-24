@@ -103,18 +103,6 @@ app.use((err, req, res, next) => {
 }); //const allowedOrigins = ['http://localhost:5173']; // Add your frontend URL hereapp.use(cors()); // Enable CORS for all routes
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-// app.use(cors({
-//  origin: function (origin, callback) {
-// Allow requests with no origin (like mobile apps or curl requests)454536@454536
-//  if (!origin || allowedOrigins.includes(origin)) { return callback(null, true);
-//  }
-
-//  return callback(new Error('The CORS policy for this site does not allow access from the specified origin.'), false);
-
-//  },
-//  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-//  allowedHeaders: ['Content-Type', 'Authorization'],
-// }));
 
 
 const carSchema = new mongoose.Schema({
@@ -1024,27 +1012,23 @@ app.use('/uploads/package/', express.static('uploads'));
 // POST route to handle form submission
 app.post('/api/packages', upload.single('picture'), async (req, res) => {
   try {
-    console.log("try k andrr");
-    const { packageName, price, date, timing, carName, model, color, seater } = req.body;
+   
+    const { packageName,  description, price, departureDate,  departureTime, arrivalDate, arrivalTime, location} = req.body;
 
-    console.log("sar cheezayhn : ", packageName, price, date, timing, carName, model, color, seater);
-
-    // Create a new package document in MongoDB
+   
     const newPackage = new Package({
       packageName,
+       description,
       price,
-      date,
-      timing,
-      carInfo: {
-        carName,
-        model,
-        color,
-        seater,
-      },
-      picture: req.file.filename, // Store filename of the uploaded picture
+      departureDate: new Date(departureDate),
+      departureTime,
+      arrivalDate: new Date(arrivalDate),
+      arrivalTime,
+      location,
+      picture:req.file ? req.file.filename : null, // Store filename of the uploaded picture
     });
 
-    console.log("naya packahe: ", newPackage);
+  
 
     await newPackage.save();
     res.status(201).json({ message: 'Package uploaded successfully!' });

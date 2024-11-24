@@ -15,7 +15,7 @@ import Register from "./pages/Register";
 import DriverCard from "./components/DriverCard";
 import Dashboard from "./pages/Dashboard";
 import CarListDashboard from "./Admin/Cars";
-import TourPackageForm from "./Admin/TourForm";
+
 import GetPackageList from "./pages/GetPackage.jsx";
 import BookingList from "./Admin/BookingList";
 import Sidebar from "./pages/Sidebar";
@@ -176,7 +176,7 @@ function App() {
         { path: "/reports", element: <Reports /> },
         { path: "/maintenance", element: <MaintenanceSchedule /> },
         ,
-        { path: "/tourPackages", element: <TourPackageForm /> },
+        
         {
           path: "/track-location/:carId",
           element: <TrackingPage />,
