@@ -1,7 +1,7 @@
 import express from "express";
-const app = express();import Package from'./models/Package.js';
+const app = express(); import Package from './models/Package.js';
 import dotenv from "dotenv"; import nodemailer from 'nodemailer';
-import morgan from "morgan"; import Stripe from 'stripe';import path from'path';
+import morgan from "morgan"; import Stripe from 'stripe'; import path from 'path';
 import loginRouter from "./routes/loginRouter.js"; import cors from 'cors';
 import mongoose from "mongoose"; import bodyParser from 'body-parser';
 import cookieParser from "cookie-parser"; import multer from 'multer'; import { createServer } from 'http';
@@ -9,7 +9,7 @@ import { Server } from 'socket.io';// var server = app.listen(8810);import io fr
 //const port =  5000;
 //app.listen(port, () => {
 //console.log(`Server is running on port ${port}`);});
-app.use(cors());dotenv.config();
+app.use(cors()); dotenv.config();
 const server = createServer(app);
 const io = new Server(server, {
   cors: {
@@ -127,16 +127,16 @@ const carSchema = new mongoose.Schema({
   category: { type: String, required: true },
   price: { type: Number, required: true },
   days: { type: Number, required: true },
-  theftProtection: { type: Boolean, required: true },
-  clean: { type: Boolean, required: true }, latitude: { type: Number, required: true },
+
+  clean: { type: Boolean, required: true },
+  latitude: { type: Number, required: true },
   longitude: { type: Number, required: true },
   carNumber: { type: String, required: true },
-  image: { type: String, required: true }, city: { type: String, required: true }, currentLocation: {
+  image: { type: String, required: true },
+  city: { type: String, required: true },
+  currentLocation: {
     lat: Number,
     lng: Number,
-  }, priceRange: {
-    min: { type: Number, default: 0 },
-    max: { type: Number, default: 100000 }
   },
 }); const Car = mongoose.model('Car', carSchema);
 
@@ -313,7 +313,7 @@ app.get('/api/drivers', async (req, res) => {
 app.post('/api/cars', uploadCar.single('image'),
   async (req, res) => {
     try {
-      const { carName, carModel, doors, seats, transmission, ac, category, price, days, theftProtection, clean, latitude, longitude, carNumber, city, priceRange } = req.body;
+      const { carName, carModel, doors, seats, transmission, ac, category, price, days, theftProtection, clean, latitude, longitude, carNumber, city } = req.body;
       const image = req.file ? req.file.path : null; // File path from multer
       // Validate presence of required fields
       if (!carName || !carModel || !doors || !seats || !transmission || !category || !price || !days || !latitude || !longitude || !carNumber || !city) {
@@ -338,7 +338,7 @@ app.post('/api/cars', uploadCar.single('image'),
         image,
         city,
         currentLocation: { lat: latitude, lng: longitude },
-        priceRange: JSON.parse(priceRange) // Parse the priceRange if necessary
+
       });
       await newCar.save();
       res.status(201).json({ message: 'Car added successfully', newCar });
@@ -379,17 +379,21 @@ app.delete('/api/cars/:id', async (req, res) => {
   } catch (error) {
     res.status(500).send('Server error');
   }
-}); app.put('/api/cars/:id', async (req, res) => {
+}); app.put('/api/cars/:id', uploadCar.single('image'), async (req, res) => {
   try {
-    const carId = req.params.id; const updates = req.body; if (req.files && req.files.image) {
+    const carId = req.params.id;
+    console.log(carId)
+    const updates = req.body;
+    if (req.files) {
       // Handle file upload if necessary
-      const image = req.files.image;
+      updates.image = req.file.path;
       // Save file and get URL or path
       // Add image URL to updates
     }
 
     const updatedCar = await Car.findByIdAndUpdate(carId, updates, { new: true });
-    if (!updatedCar) return res.status(404).send('Car not found'); res.json(updatedCar);
+    if (!updatedCar) return res.status(404).send('Car not found');
+    res.json(updatedCar);
   } catch (error) {
     res.status(500).json({ message: 'Failed to update car', error });
   }
@@ -760,18 +764,19 @@ app.delete('/api/bookings/:id', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
- // Daily report
- app.get('/api/reports/daily', async (req, res) => {
+// Daily report
+app.get('/api/reports/daily', async (req, res) => {
   try {
     const dailyBookings = await Booking.aggregate([
-      {$lookup: {
-        from: 'cars', // The name of the Car collection in the database
-        localField: 'car',
-        foreignField: '_id',
-        as: 'carDetails'
-      }
-    }, { $unwind: '$carDetails' }, // Unwind the array to use individual car objects
-    {
+      {
+        $lookup: {
+          from: 'cars', // The name of the Car collection in the database
+          localField: 'car',
+          foreignField: '_id',
+          as: 'carDetails'
+        }
+      }, { $unwind: '$carDetails' }, // Unwind the array to use individual car objects
+      {
         $group: {
           _id: {
             year: { $year: '$date' },
@@ -794,34 +799,35 @@ app.delete('/api/bookings/:id', async (req, res) => {
 
 // Monthly report
 app.get('/api/reports/monthly', async (req, res) => {
-try {
-  const monthlyBookings = await Booking.aggregate([
-    { $lookup: {
-      from: 'cars',
-      localField: 'car',
-      foreignField: '_id',
-      as: 'carDetails'
-    }
-  },
-  { $unwind: '$carDetails' },
-  {
-      $group: {
-        _id: {
-          year: { $year: '$date' },
-          month: { $month: '$date' }
-        },
-        bookings: { $sum: 1 },
-        totalRevenue: { $sum: '$carDetails.price' }
-      }
-    },
-    { $sort: { '_id.year': -1, '_id.month': -1 } }
-  ]);
+  try {
+    const monthlyBookings = await Booking.aggregate([
+      {
+        $lookup: {
+          from: 'cars',
+          localField: 'car',
+          foreignField: '_id',
+          as: 'carDetails'
+        }
+      },
+      { $unwind: '$carDetails' },
+      {
+        $group: {
+          _id: {
+            year: { $year: '$date' },
+            month: { $month: '$date' }
+          },
+          bookings: { $sum: 1 },
+          totalRevenue: { $sum: '$carDetails.price' }
+        }
+      },
+      { $sort: { '_id.year': -1, '_id.month': -1 } }
+    ]);
 
-  res.json(monthlyBookings);
-} catch (error) {
-  console.error('Error fetching monthly report:', error);
-  res.status(500).json({ error: 'Internal server error' });
-}
+    res.json(monthlyBookings);
+  } catch (error) {
+    console.error('Error fetching monthly report:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 });
 const MaintenanceScheduleSchema = new mongoose.Schema({
   carId: {
@@ -829,7 +835,7 @@ const MaintenanceScheduleSchema = new mongoose.Schema({
     ref: 'Car',
     required: true
   },
-  
+
   maintenanceDate: {
     type: Date,
     required: true
@@ -846,7 +852,7 @@ const MaintenanceScheduleSchema = new mongoose.Schema({
 const Maintenance = mongoose.model('Maintenance', MaintenanceScheduleSchema);
 // Nodemailer Setup
 const transporter = nodemailer.createTransport({
-  service: 'gmail',host: 'smtp.gmail.email',port:465,
+  service: 'gmail', host: 'smtp.gmail.email', port: 465,
   auth: {
     user: 'umar1466088@gmail.com',
     pass: 'vawj nujs lbfr auda',
@@ -870,18 +876,18 @@ const checkMaintenance = async (req, res, next) => {
       // Send email to all users
       for (const user of users) {
         const mailOptions = {
-          from:'umar1466088@gmail.com' ,
-          to:user.email,
+          from: 'umar1466088@gmail.com',
+          to: user.email,
           subject,
           text
         };
         try {
-        await transporter.sendMail(mailOptions);
-      }catch (emailError) {
-        console.error(`Error sending email to cartooncraze302@gmail.com:`, emailError);
+          await transporter.sendMail(mailOptions);
+        } catch (emailError) {
+          console.error(`Error sending email to cartooncraze302@gmail.com:`, emailError);
+        }
       }
-    }
-    
+
       // Update notification statususer.email
       schedule.notificationSent = true;
       await schedule.save();
@@ -892,7 +898,7 @@ const checkMaintenance = async (req, res, next) => {
     console.error('Error checking maintenance:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
-};app.use('/api/maintenance', checkMaintenance); // Adjust as needed
+}; app.use('/api/maintenance', checkMaintenance); // Adjust as needed
 // Routes
 // app.use(checkMaintenance);
 // Create a maintenance schedule
@@ -902,8 +908,8 @@ app.post('/api/maintenance', async (req, res) => {
   try {
     const newSchedule = new Maintenance({ carId, maintenanceDate, description });
     await newSchedule.save();
- // Send email notification on creation
- const users = await User.find();
+    // Send email notification on creation
+    const users = await User.find();
 
     // Email subject and text
     const subject = 'New Maintenance Scheduled';
@@ -915,15 +921,16 @@ app.post('/api/maintenance', async (req, res) => {
         subject,
         text,
       };
- try {
-  await transporter.sendMail(mailOptions);
-  console.log(`Email sent successfully  to ${user.email}`);
-} catch (error) {
-  console.error('Error sending email on creation:', error);
-}
-}
+      try {
+        await transporter.sendMail(mailOptions);
+        console.log(`Email sent successfully  to ${user.email}`);
+      } catch (error) {
+        console.error('Error sending email on creation:', error);
+      }
+    }
     res.status(201).json(newSchedule);
-  } catch (error) { console.error('Error creating maintenance schedule:', error);
+  } catch (error) {
+    console.error('Error creating maintenance schedule:', error);
     res.status(500).json({ message: error.message });
   }
 });
@@ -946,40 +953,41 @@ app.put('/api/maintenance/:id', async (req, res) => {
   try {
     const schedule = await Maintenance.findByIdAndUpdate(id,
       { maintenanceDate, description }, { new: true } // Return the updated document
-      ).populate('carId');
+    ).populate('carId');
 
-      if (!schedule) {
-        return res.status(404).json({ message: 'Schedule not found' });
+    if (!schedule) {
+      return res.status(404).json({ message: 'Schedule not found' });
+    }
+
+    // Send email notification for the updated maintenance schedule
+    const car = schedule.carId;
+    const users = await User.find(); // Fetch users if needed
+
+    const subject = 'Maintenance Schedule Updated';
+    const text = `The maintenance for car ${car.carName} (${car.carModel}) has been updated to ${maintenanceDate}.`;
+
+    for (const user of users) {
+      const mailOptions = {
+        from: 'umar1466088@gmail.com',
+        to: user.email, // Use the user's email from the database
+        subject,
+        text,
+      };
+
+      try {
+        await transporter.sendMail(mailOptions);
+        console.log(`Email sent successfully to ${user.email}`);
+      } catch (emailError) {
+        console.error(`Error sending email to ${user.email}:`, emailError);
       }
-  
-      // Send email notification for the updated maintenance schedule
-      const car = schedule.carId;
-      const users = await User.find(); // Fetch users if needed
-  
-      const subject = 'Maintenance Schedule Updated';
-      const text = `The maintenance for car ${car.carName} (${car.carModel}) has been updated to ${maintenanceDate}.`;
-  
-      for (const user of users) {
-        const mailOptions = {
-          from: 'umar1466088@gmail.com',
-          to: user.email, // Use the user's email from the database
-          subject,
-          text,
-        };
-  
-        try {
-          await transporter.sendMail(mailOptions);
-          console.log(`Email sent successfully to ${user.email}`);
-        } catch (emailError) {
-          console.error(`Error sending email to ${user.email}:`, emailError);
-        }
-      }
-  
-    
+    }
+
+
 
     res.status(200).json(schedule);
-   
-  } catch (error) { console.error('Error updating schedule:', error);
+
+  } catch (error) {
+    console.error('Error updating schedule:', error);
     res.status(500).json({ message: error.message });
   }
 });
@@ -1009,7 +1017,7 @@ const storage = multer.diskStorage({
 // Serve static files from the uploads folder
 
 
-const upload = multer({  storage:storage });
+const upload = multer({ storage: storage });
 
 app.use('/uploads/package/', express.static('uploads'));
 
@@ -1019,7 +1027,7 @@ app.post('/api/packages', upload.single('picture'), async (req, res) => {
     console.log("try k andrr");
     const { packageName, price, date, timing, carName, model, color, seater } = req.body;
 
-    console.log("sar cheezayhn : " , packageName, price, date, timing, carName, model, color, seater);
+    console.log("sar cheezayhn : ", packageName, price, date, timing, carName, model, color, seater);
 
     // Create a new package document in MongoDB
     const newPackage = new Package({
@@ -1063,7 +1071,7 @@ app.get('/api/packages/:id', async (req, res) => {
   try {
     const packageId = req.params.id;
     const getPackage = await Package.findById(packageId);
-    
+
     if (!getPackage) {
       return res.status(404).json({ error: 'Package not found' });
     }
@@ -1140,18 +1148,19 @@ app.delete('/api/packages/:id', async (req, res) => {
 });
 app.get('/api/search', async (req, res) => {
   try {
-  const { search} = req.query;
+    const { search } = req.query;
 
-  // Construct search filters
-  const filters = {};
-  if (search) { const regex = new RegExp(search, 'i');
-    filters.$or =  [
-      { packageName: regex },
-      { price: { $gte: parseInt(search), $lte: parseInt(search) + 1000 } }, // Search for price range
-  ];; // Case-insensitive search
-  }
- 
-  
+    // Construct search filters
+    const filters = {};
+    if (search) {
+      const regex = new RegExp(search, 'i');
+      filters.$or = [
+        { packageName: regex },
+        { price: { $gte: parseInt(search), $lte: parseInt(search) + 1000 } }, // Search for price range
+      ];; // Case-insensitive search
+    }
+
+
     const packages = await Package.find(filters);
     res.json(packages);
   } catch (error) {

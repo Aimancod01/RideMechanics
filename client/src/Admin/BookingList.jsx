@@ -59,16 +59,16 @@ const BookingList = () => {
             <div key={booking._id} className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300  transform hover:scale-105 relative">
               <div className="p-4 space-y-2">
                 <h2 className="text-xl font-semibold text-orange-600 mb-2">{booking.car?.carName} - {booking.car?.carModel}</h2>
-                <p className="text-gray-700"><span className="font-semibold">Customer:</span> {booking.customer?.fullName || 'N/A'}</p>
-                <p className="text-gray-700"><span className="font-semibold">Contact Number:</span> {booking.customer?.contactNumber || 'N/A'}</p>
-                <p className="text-gray-700"><span className="font-semibold">Total Price:</span> Rs {booking.car?.price || 'N/A'}</p>
-                <p className="text-gray-700"><span className="font-semibold">Pickup Date:</span> {booking.searchData?.pickupDate ? new Date(booking.searchData.pickupDate).toLocaleDateString() : 'N/A'}</p>
-                <p className="text-gray-700"><span className="font-semibold">Dropoff Date:</span> {booking.searchData?.dropoffDate ? new Date(booking.searchData.dropoffDate).toLocaleDateString() : 'N/A'}</p>
+                <p className="text-gray-700"><span className="font-semibold">Customer:</span> {booking.customer?.fullName || 'Not Found'}</p>
+                <p className="text-gray-700"><span className="font-semibold">Contact Number:</span> {booking.customer?.contactNumber || 'Not Found'}</p>
+                <p className="text-gray-700"><span className="font-semibold">Total Price:</span> Rs {booking.car?.price || 'Not Found'}</p>
+                <p className="text-gray-700"><span className="font-semibold">Pickup Date:</span> {booking.searchData?.pickupDate ? new Date(booking.searchData.pickupDate).toLocaleDateString() : 'Not Found'}</p>
+                <p className="text-gray-700"><span className="font-semibold">Dropoff Date:</span> {booking.searchData?.dropoffDate ? new Date(booking.searchData.dropoffDate).toLocaleDateString() : 'Not Found'}</p>
                 <p className="text-gray-700"><span className="font-semibold">Date:</span> {new Date(booking.date).toLocaleDateString()}</p>
                 <p className="text-gray-700"><span className="font-semibold">Availability:</span> {booking.car?.available ? 'Available' : 'Not Available'}</p>
                 <p className="text-gray-700"><span className="font-semibold">Payment Status:</span> {booking.car?.paymentStatus || 'Pending'}</p>
 
-                <p className="text-gray-700">availabilityEndDate {booking.availabilityEndDate ? new Date(booking.availabilityEndDate).toLocaleDateString() : 'N/A'}</p>
+                <p className="text-gray-700"><span className="font-semibold">availabilityEndDate:</span> {booking.availabilityEndDate ? new Date(booking.availabilityEndDate).toLocaleDateString() : 'Not Found'}</p>
                 </div>
               {/* Add a button to track location */}
               <div className="p-5 flex justify-between items-center border-t">  <button

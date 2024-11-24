@@ -1,10 +1,9 @@
 // src/components/CarList.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { PulseLoader } from 'react-spinners';
-import { FaEllipsisH, FaDoorOpen, FaCouch, FaBolt, FaCar, FaSnowflake, FaEdit, FaTrash } from 'react-icons/fa';
+import {  FaEllipsisH, FaDoorOpen, FaCouch, FaBolt, FaCar, FaSnowflake, FaEdit, FaTrash, FaPlus } from 'react-icons/fa';
 const CarListDashboard = () => {
   const [cars, setCars] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -54,9 +53,20 @@ const CarListDashboard = () => {
       return () => clearTimeout(timer);
     }
   }, [notification]);
+
+  const handleViewBookings = () => {
+   
+    navigate('/addCar');
+  };
   return (
-    <div className="max-w-7xl mx-auto p-4">
+    <div className="max-w-7xl mx-auto p-4">  <div className="flex justify-between items-center mb-6">
       <h2 className="text-3xl font-bold text-orange-500 mb-6">Car List</h2>
+      <button
+        onClick={handleViewBookings}
+        className="bg-orange-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-orange-600 flex items-center"
+      >
+        <FaPlus className="mr-2" /> Add Car
+      </button> </div>
       {notification && (
         <div
           className={`p-4 mb-4 rounded-md text-white ${notification.type === 'success' ? 'bg-green-500' : 'bg-red-500'}`}
@@ -96,7 +106,7 @@ const CarListDashboard = () => {
 
                 <div className="mt-4 space-x-2">
                   <span className="bg-blue-100 text-blue-500 text-xs font-semibold  px-2.5 py-0.5 rounded">{car.category}</span>
-                  <span className="bg-green-100 text-green-500 text-xs font-semibold  px-2.5 py-0.5 rounded">Theft Protection</span>
+
                   <span className="bg-purple-100 text-purple-500 text-xs font-semibold px-2.5 py-0.5 rounded">Clean Interior/Exterior</span>
                 </div>
                 <div className="flex justify-between items-center mt-4">

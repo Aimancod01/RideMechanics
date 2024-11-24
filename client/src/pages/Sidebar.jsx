@@ -1,10 +1,6 @@
-
 import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
- {/*import { faFileChartColumn, faWrench } from '@fortawesome/free-solid-svg-icons';*/}
-
 import { Link } from 'react-router-dom';
-import { Home, Car, Calendar, User,Construction, } from 'lucide-react';
+import { Home, Car, Calendar, User, FileText, Wrench, Package } from 'lucide-react';
 
 const Sidebar = () => {
   return (
@@ -34,12 +30,17 @@ const Sidebar = () => {
             <span className="text-lg font-semibold text-orange-800 text-center">Profile</span>
           </Link>
           <Link to="/reports" className="bg-white rounded-3xl shadow-lg p-4 transition duration-300 ease-in-out hover:scale-105 hover:bg-orange-100 flex flex-col items-center justify-center">
-         {/*  <FontAwesomeIcon icon={faFileChartColumn} size="2x" className="text-orange-700 mb-2" />*/}
+          <FileText size={32} className="text-orange-700 mb-2" />
           <span className="text-lg font-semibold text-orange-800 text-center">Reports</span> 
         </Link>
         <Link to="/Maintenance" className="bg-white rounded-3xl shadow-lg p-4 transition duration-300 ease-in-out hover:scale-105 hover:bg-orange-100 flex flex-col items-center justify-center">
-        {/* <FontAwesomeIcon  icon={faWrench} size="2x" className="text-orange-700 mb-2" />*/}
+        <Wrench size={32} className="text-orange-700 mb-2" />
           <span className="text-lg font-semibold text-orange-800 text-center"> Maintenance Schedule</span>
+        </Link>
+
+        <Link to="/packageList" className="bg-white rounded-3xl shadow-lg p-4 transition duration-300 ease-in-out hover:scale-105 hover:bg-orange-100 flex flex-col items-center justify-center">
+        <Package size={32} className="text-orange-700 mb-2" />
+          <span className="text-lg font-semibold text-orange-800 text-center"> Tour Packages</span>
         </Link>
         </div>
      

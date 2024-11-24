@@ -40,7 +40,7 @@ import EditCar from "./Admin/EditCar";
 import Confirmation from "./components/Confirmation";
 import PackageList from "./Admin/PackageList.jsx";
 import UploadPackage from "./Admin/UploadPackage.jsx";
-import ProtectedRoute from "./pages/ProtectedRoutes.jsx";
+import ProtectedRoute from "./pages/ProtectedRoutes.jsx";import CarForm from "./Admin/CarForm";
 function App() {
   const rentalId = "unique-rental-id"; // Replace with actual rentalIdTourPackageForm
   const user = "carOwner"; // or 'renter', based on the current user1.0.6
@@ -162,6 +162,10 @@ function App() {
         {
           path: "/Sidebar",
           element: <Sidebar />,
+        },,
+        {
+          path: "/addCar",
+          element: <CarForm />,
         },
         {
           path: "/edit-car/:id",
