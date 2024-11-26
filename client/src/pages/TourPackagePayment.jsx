@@ -4,7 +4,7 @@ import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-function TourPackagePayment() {
+function TourPackagePayment({ packageId, customerId }) {
     const { state } = useLocation();
     const customer = state?.customer;
     const selectedPackage = state?.package;

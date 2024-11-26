@@ -48,7 +48,7 @@ function GetPackageList() {
             });
     };
     const handleBuy = (pkg) => {
-        navigate("/tourCustomerForm", { state: { selectedPackage: pkg } });
+        navigate(`/tourCustomerForm?packageId=${pkg._id}`);
     };
     return (
         <div className="py-8 px-4  min-h-screen flex flex-col items-center">
