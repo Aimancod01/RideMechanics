@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Edit2, Trash2 } from "lucide-react"; // Import Lucide icons
-import { PulseLoader } from "react-spinners";
+import { PulseLoader } from "react-spinners";import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 function PackageList() {
   const [packages, setPackages] = useState([]);
   const [selectedPackage, setSelectedPackage] = useState(null);
@@ -132,12 +133,13 @@ function PackageList() {
               )}
               <div className="p-4">
                 <h3 className="text-xl font-semibold text-gray-800">{pkg.packageName}</h3>
+                <p className="text-gray-600"><strong>Description:</strong> ${pkg.description}</p>
                 <p className="text-gray-600"><strong>Price:</strong> ${pkg.price}</p>
-                <p className="text-gray-600"><strong>Date:</strong> {new Date(pkg.date).toLocaleDateString()}</p>
-                <p className="text-gray-600"><strong>Timing:</strong> {pkg.timing}</p>
-                <p className="text-gray-600"><strong>Car:</strong> {pkg.carInfo.carName} - {pkg.carInfo.model}</p>
-                <p className="text-gray-600"><strong>Color:</strong> {pkg.carInfo.color}</p>
-                <p className="text-gray-600"><strong>Seater:</strong> {pkg.carInfo.seater}</p>
+                <p className="text-gray-600"><strong>Departure Date:</strong> {new Date(pkg.departureDate).toLocaleDateString()}</p>
+                <p className="text-gray-600"><strong>Departure Time:</strong> {pkg.departureTime}</p>
+                <p className="text-gray-600"><strong>Arrival Date:</strong> {new Date(pkg.arrivalDate).toLocaleDateString()}</p>
+                <p className="text-gray-600"><strong>Arrival Time:</strong> {pkg.arrivalTime}</p>
+                <p className="text-gray-600"><strong>Location:</strong> {pkg.location}</p>
               </div>
             </div>
           ))
@@ -164,6 +166,15 @@ function PackageList() {
               onChange={handleChange}
               className="w-full mt-1 p-2 border border-gray-300 rounded-lg"
             />
+          </label><label className="block mb-2">
+            Description:
+            <input
+              type="text"
+              name="description"
+              value={updatedPackage.description}
+              onChange={handleChange}
+              className="w-full mt-1 p-2 border border-gray-300 rounded-lg"
+            />
           </label>
           <label className="block mb-2">
               Price:
@@ -176,65 +187,63 @@ function PackageList() {
               />
             </label>
             <label className="block mb-2">
-              Date:
-              <input
-                type="date"
-                name="date"
-                value={new Date(updatedPackage.date).toISOString().split("T")[0]}
-                onChange={handleChange}
+            Departure Date:
+            <DatePicker
+                selected={new Date(updatedPackage.departureDate)}
+                onChange={(date) =>
+                  setUpdatedPackage((prev) => ({
+                    ...prev,
+                    departureDate: date,
+                  }))
+                }
                 className="w-full mt-1 p-2 border border-gray-300 rounded-lg"
               />
             </label>
             <label className="block mb-2">
-              Timing:
+           Departure Time:
+
               <input
                 type="text"
-                name="timing"
-                value={updatedPackage.timing}
+                name="departureTime"
+                value={updatedPackage.departureTime}
                 onChange={handleChange}
                 className="w-full mt-1 p-2 border border-gray-300 rounded-lg"
               />
             </label>
             <label className="block mb-2">
-              Car Name:
+            Arrival Date:
+            <DatePicker
+                selected={new Date(updatedPackage.arrivalDate)}
+                onChange={(date) =>
+                  setUpdatedPackage((prev) => ({
+                    ...prev,
+                    arrivalDate: date,
+                  }))
+                }
+                className="w-full mt-1 p-2 border border-gray-300 rounded-lg"
+              />
+            </label>
+            <label className="block mb-2">
+            Arrival Time:
               <input
                 type="text"
-                name="carName"
-                value={updatedPackage.carInfo.carName}
+                name="arrivalTime"
+                value={updatedPackage.arrivalTime}
                 onChange={handleChange}
                 className="w-full mt-1 p-2 border border-gray-300 rounded-lg"
               />
             </label>
             <label className="block mb-2">
-              Model:
+              Location:
               <input
                 type="text"
-                name="model"
-                value={updatedPackage.carInfo.model}
+                name="location"
+                value={updatedPackage.location}
                 onChange={handleChange}
                 className="w-full mt-1 p-2 border border-gray-300 rounded-lg"
               />
             </label>
-            <label className="block mb-2">
-              Color:
-              <input
-                type="text"
-                name="color"
-                value={updatedPackage.carInfo.color}
-                onChange={handleChange}
-                className="w-full mt-1 p-2 border border-gray-300 rounded-lg"
-              />
-            </label>
-            <label className="block mb-2">
-              Seater:
-              <input
-                type="number"
-                name="seater"
-                value={updatedPackage.carInfo.seater}
-                onChange={handleChange}
-                className="w-full mt-1 p-2 border border-gray-300 rounded-lg"
-              />
-            </label>
+           
             <label className="block mb-2">
               Picture:
               <input

@@ -1089,14 +1089,13 @@ app.put('/api/packages/:id', upload.single('picture'), async (req, res) => {
     const updatedData = {
       packageName: req.body.packageName,
       price: req.body.price,
-      date: req.body.date,
-      timing: req.body.timing,
-      carInfo: {
-        carName: req.body.carName,
-        model: req.body.model,
-        color: req.body.color,
-        seater: req.body.seater,
-      },
+      description: req.body.description,
+      departureDate: req.body.departureDate,
+      departureTime: req.body.departureTime,
+      arrivalDate: req.body. arrivalDate,
+      arrivalTime: req.body. arrivalTime,
+      location: req.body.location,
+      
     };
 
     // Handle picture upload

@@ -95,12 +95,13 @@ function GetPackageList() {
                                 )}
                                 <div className="p-4">
                                     <h3 className="text-xl font-semibold text-gray-800">{pkg.packageName}</h3>
+                                    <p className="text-gray-600"><strong>Description:</strong> ${pkg.description}</p>
                                     <p className="text-gray-600"><strong>Price:</strong> ${pkg.price}</p>
-                                    <p className="text-gray-600"><strong>Date:</strong> {new Date(pkg.date).toLocaleDateString()}</p>
-                                    <p className="text-gray-600"><strong>Timing:</strong> {pkg.timing}</p>
-                                    <p className="text-gray-600"><strong>Car:</strong> {pkg.carInfo.carName} - {pkg.carInfo.model}</p>
-                                    <p className="text-gray-600"><strong>Color:</strong> {pkg.carInfo.color}</p>
-                                    <p className="text-gray-600"><strong>Seater:</strong> {pkg.carInfo.seater}</p>
+                                    <p className="text-gray-600"><strong>Departure Date:</strong> {new Date(pkg.departureDate).toLocaleDateString()}</p>
+                                    <p className="text-gray-600"><strong>Departure Time:</strong> {pkg.departureTime}</p>
+                                    <p className="text-gray-600"><strong>Arrival Date:</strong> {new Date(pkg.arrivalDate).toLocaleDateString()}</p>
+                                    <p className="text-gray-600"><strong>Arrival Time:</strong> {pkg.arrivalTime}</p>
+                                    <p className="text-gray-600"><strong>Location:</strong> {pkg.location}</p>
                                     <button    onClick={() => handleBuy(pkg)}
                 type="submit"
                 className="w-full p-3 mt-4 text-white bg-orange-500 rounded-md hover:bg-orange-600 transition duration-200 ease-in-out"
