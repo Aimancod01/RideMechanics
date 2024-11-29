@@ -144,15 +144,7 @@ const carSchema = new mongoose.Schema({
 app.use('/uploads', express.static('uploads'));
 
 // Configure multer for image upload
-const carStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/');
-  },
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    cb(null, `${Date.now()}${ext}`);
-  }
-});
+
 
 const driverStorage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -162,7 +154,7 @@ const driverStorage = multer.diskStorage({
     cb(null, `${Date.now()}-${file.originalname}`);
   },
 });
-const uploadCar = multer({ storage: carStorage });
+
 const uploadDriver = multer({ storage: driverStorage });
 app.post('/api/drivers', uploadDriver.fields([{ name: 'carImage' }, { name: 'driverImage' }]), [
   body('carName').notEmpty().withMessage('Car name is required'),
@@ -308,10 +300,19 @@ app.get('/api/drivers', async (req, res) => {
   });
 });
 // API endpoint to create a car rental entry
-app.post('/api/cars', uploadCar.single('image'),
+const carStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    cb(null, `${Date.now()}${ext}`);
+  }
+});const uploadCar = multer({ storage: carStorage });
+app.post('/api/cars/upload', uploadCar.single('image'),
   async (req, res) => {
     try {
-      const { carName, carModel, doors, seats, transmission, ac, category, price, days, theftProtection, clean, latitude, longitude, carNumber, city } = req.body;
+      const { carName, carModel, doors, seats, transmission, ac, category, price, days,  clean, latitude, longitude, carNumber, city } = req.body;
       const image = req.file ? req.file.path : null; // File path from multer
       // Validate presence of required fields
       if (!carName || !carModel || !doors || !seats || !transmission || !category || !price || !days || !latitude || !longitude || !carNumber || !city) {
@@ -328,7 +329,7 @@ app.post('/api/cars', uploadCar.single('image'),
         category,
         price,
         days,
-        theftProtection,
+      
         clean,
         latitude,
         longitude,
