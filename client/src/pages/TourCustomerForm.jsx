@@ -38,7 +38,9 @@ if(packageId){
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+    
         const customerData = { ...formData, packageId };
+    
         try {
             const response = await fetch("http://localhost:5000/api/tourCustomer", {
                 method: "POST",
@@ -47,25 +49,29 @@ if(packageId){
                 },
                 body: JSON.stringify(customerData),
             });
-
+    
             if (response.ok) {
                 const data = await response.json();
-                console.log("Customer saved successfully:", data);
-                const customerId = data.customerData._id;
-                console.log(customerId)
-                if (customerId) {
-               navigate(`/tourPackagePayment?packageId=${packageId}&customerId=${data.customerData._id}`);
-            }  } else {
+                console.log("Response from server:", data);
+    
+                if (data?.newCustomer?._id) {
+                    const customerId = data.newCustomer._id;
+                    console.log("Customer saved successfully, navigating to payment page:", customerId);
+    
+                    // Navigate to the payment page
+                    navigate(`/tourPackagePayment?packageId=${packageId}&customerId=${customerId}`);
+                } else {
+                    console.error("Customer ID not found in the response:", data);
+                }
+            } else {
                 const errorData = await response.json();
                 console.error("Error saving customer:", errorData);
-
             }
         } catch (error) {
             console.error("Network error:", error);
-
         }
     };
-
+    
     return (
         <div className="max-w-lg mx-auto mt-8 p-6 bg-white shadow-lg rounded-lg">
             <h2 className="text-2xl font-bold mb-4 text-orange-600 text-center">Tour Customer Information</h2>

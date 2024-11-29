@@ -1,10 +1,20 @@
 import express from "express";
-const app = express(); import Package from './models/Package.js';import TourPayment from './models/Payment.js';
-import dotenv from "dotenv"; import nodemailer from 'nodemailer';import TourCustomer from './models/TourCustomer.js';
-import morgan from "morgan"; import Stripe from 'stripe'; import path from 'path';
-import loginRouter from "./routes/loginRouter.js"; import cors from 'cors';
-import mongoose from "mongoose"; import bodyParser from 'body-parser';
-import cookieParser from "cookie-parser"; import multer from 'multer'; import { createServer } from 'http';
+const app = express();
+import Package from './models/Package.js';
+import TourPayment from './models/Payment.js';
+import dotenv from "dotenv";
+import nodemailer from 'nodemailer';
+import TourCustomer from './models/TourCustomer.js';
+import morgan from "morgan";
+import Stripe from 'stripe';
+import path from 'path';
+import loginRouter from "./routes/loginRouter.js";
+import cors from 'cors';
+import mongoose from "mongoose";
+import bodyParser from 'body-parser';
+import cookieParser from "cookie-parser";
+import multer from 'multer';
+import { createServer } from 'http';
 import { Server } from 'socket.io';// var server = app.listen(8810);import io from ('socket.io').listen(server);process.env.PORT ||
 //const port =  5000;
 //app.listen(port, () => {
@@ -1012,23 +1022,23 @@ app.use('/uploads/package/', express.static('uploads'));
 // POST route to handle form submission
 app.post('/api/packages', upload.single('picture'), async (req, res) => {
   try {
-   
-    const { packageName,  description, price, departureDate,  departureTime, arrivalDate, arrivalTime, location} = req.body;
 
-   
+    const { packageName, description, price, departureDate, departureTime, arrivalDate, arrivalTime, location } = req.body;
+
+
     const newPackage = new Package({
       packageName,
-       description,
+      description,
       price,
       departureDate: new Date(departureDate),
       departureTime,
       arrivalDate: new Date(arrivalDate),
       arrivalTime,
       location,
-      picture:req.file ? req.file.filename : null, // Store filename of the uploaded picture
+      picture: req.file ? req.file.filename : null, // Store filename of the uploaded picture
     });
 
-  
+
 
     await newPackage.save();
     res.status(201).json({ message: 'Package uploaded successfully!' });
@@ -1156,6 +1166,11 @@ app.post('/api/tourCustomer', async (req, res) => {
   try {
     const { firstName, lastName, email, cnic, address, packageId } = req.body;
 
+    // Validate packageId
+    if (!mongoose.Types.ObjectId.isValid(packageId)) {
+      return res.status(400).json({ error: 'Invalid package ID' });
+    }
+
     // Find the selected package
     const selectedPackage = await Package.findById(packageId);
     if (!selectedPackage) {
@@ -1174,44 +1189,64 @@ app.post('/api/tourCustomer', async (req, res) => {
 
     // Save the customer to the database
     await newCustomer.save();
-    res.status(201).json({ message: 'Customer information saved successfully!' });
+
+    // Respond with the new customer's data
+    res.status(201).json({
+      message: 'Customer information saved successfully!',
+      newCustomer, // Include the full customer object
+    });
   } catch (error) {
     console.error('Error saving customer:', error);
     res.status(500).json({ error: 'Error saving customer information' });
   }
 });
+app.get('/api/tourCustomer/:id', async (req, res) => {
+  try {
+    const tourCustomer = req.params.id;
+    const tourCustomerData = await TourCustomer.findById(tourCustomer);
+
+    if (!tourCustomerData ) {
+      return res.status(404).json({ error: 'tourCustomerData not found' });
+    }
+
+    res.status(200).json(tourCustomerData);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching tourCustomerData' });
+  }
+});
+
 app.post("/api/tour-package-payment", async (req, res) => {
   try {
-      const { amount, customerName, customerEmail } = req.body;
+    const { amount, customerName, customerEmail } = req.body;
 
-      const paymentIntent = await stripe.paymentIntents.create({
-          amount, // Amount in cents
-          currency: "usd",
-          payment_method_types: ["card"],
-          metadata: { customerName, customerEmail },
-      });
-      const transporter = nodemailer.createTransport({
-        service: "Gmail",
-        auth: {
-            user: "umar1466088@gmail.com",
-            pass: "vawj nujs lbfr auda",
-        },
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount, // Amount in cents
+      currency: "usd",
+      payment_method_types: ["card"],
+      receipt_email: customerEmail,  description: `Payment for ${customerName}`,
+    });
+    const transporter = nodemailer.createTransport({
+      service: 'Gmail', host: 'smtp.gmail.email', port: 587,
+      auth: {
+        user: "umar1466088@gmail.com",
+        pass: "hmha agbk ntmq ogty",
+      },
     });
 
     const mailOptions = {
-        from: "umar1466088@gmail.com",
-        to: customerEmail,
-        subject: "Payment Confirmation",
-        text: `Dear ${customerName},\n\nYour payment of $${amount / 100} was successful. Thank you for choosing our service!\n\nBest regards,\nYour Company`,
+      from: "umar1466088@gmail.com",
+      to: customerEmail,
+      subject: "Payment Confirmation",
+      text: `Dear ${customerName},\n\nYour payment of $${amount / 100} was successful. Thank you for choosing our service!\n\nBest regards,\nYour Company`,
     };
 
     await transporter.sendMail(mailOptions);
-      res.json({ clientSecret: paymentIntent.client_secret, paymentId: paymentIntent.id  });
+    res.status(200).json({ clientSecret: paymentIntent.client_secret, paymentId: paymentIntent.id });
   } catch (error) {
-      console.error("Error creating payment intent:", error);
-      res.status(500).json({ error: "Failed to create payment intent" });
+    console.error("Error creating payment intent:", error);
+    res.status(500).json({ error: "Failed to create payment intent" });
   }
-});app.post("/api/save-payment", async (req, res) => {
+}); app.post("/api/save-payment", async (req, res) => {
   const { customerId, paymentId, packageId, quantity, totalPrice } = req.body;
 
   try {  // Find the customer
@@ -1219,20 +1254,20 @@ app.post("/api/tour-package-payment", async (req, res) => {
     if (!customer) {
       return res.status(404).json({ error: "Customer not found." });
     }
-      const paymentRecord = new TourPayment({
-          customerId,
-          paymentId,
-          packageId,
-          quantity,
-          totalPrice,
-      });
+    const paymentRecord = new TourPayment({
+      customerId,
+      paymentId,
+      packageId,
+      quantity,
+      totalPrice,
+    });
 
-      await paymentRecord.save();
+    await paymentRecord.save();
 
-      res.status(201).json({ message: "Payment saved successfully!" });
+    res.status(201).json({ message: "Payment saved successfully!" });
   } catch (error) {
-      console.error("Error saving payment:", error);
-      res.status(500).json({ error: "Failed to save payment" });
+    console.error("Error saving payment:", error);
+    res.status(500).json({ error: "Failed to save payment" });
   }
 });
 
