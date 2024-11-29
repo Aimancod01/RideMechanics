@@ -43,7 +43,8 @@ import UploadPackage from "./Admin/UploadPackage.jsx";
 import PaymentWrapper from "./pages/PaymentWrapper.jsx";
 import ProtectedRoute from "./pages/ProtectedRoutes.jsx";
 import CarForm from "./Admin/CarForm";
-import Mechanics from "./pages/Mechanics.jsx";
+import Mechanics from "./pages/Mechanics.jsx";BookedTourPackageList
+import BookedTourPackageList from "./pages/BookedTourPackage.jsx";
 function App() {
   const rentalId = "unique-rental-id"; // Replace with actual rentalIdTourPackageForm
   const user = "carOwner"; // or 'renter', based on the current user1.0.6
@@ -211,6 +212,9 @@ function App() {
         {
           path: "/mechanics",
           element: <Mechanics />,
+        }, {
+          path: "//tour/list",
+          element: <BookedTourPackageList />,
         },
       ],
     },

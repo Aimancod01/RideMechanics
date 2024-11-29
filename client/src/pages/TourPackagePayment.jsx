@@ -58,7 +58,7 @@ function TourPackagePayment({ packageId, customerId }) {
                     customerEmail: customer.email,
                 }),
             });
-            console.log('resp', response.data)
+         
             const { clientSecret } = await response.json();
 
             const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {

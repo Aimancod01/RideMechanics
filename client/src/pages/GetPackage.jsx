@@ -8,34 +8,32 @@ function GetPackageList() {
    
     const [loading, setLoading] = useState(true); // Add loading state
     const navigate = useNavigate();
-
     useEffect(() => {
-        // Fetch all packages
         fetch("http://localhost:5000/api/packages")
             .then((res) => res.json())
             .then((data) => {
                 setPackages(data);
-                setLoading(false); // Set loading to false once data is fetched
+                setLoading(false); 
             })
             .catch((error) => {
                 console.error("Error fetching packages:", error);
-                setLoading(false); // Stop loading even if there's an error
+                setLoading(false); 
             });
     }, []);
     const handleUploadClick = () => {
         navigate("/upload/package");
     };
 
-
-    useEffect(() => {
-        fetchPackages();
-    }, [search]);
+    const handleGetTourListClick = () => {
+        // Navigate to the tour list page or perform other logic
+        navigate("/tour/list");
+    };
 
     const fetchPackages = () => {
         setLoading(true);
         const query = new URLSearchParams();
         if (search) query.append('search', search);
-       
+
         fetch(`http://localhost:5000/api/search?${query.toString()}`)
             .then((res) => res.json())
             .then((data) => {
@@ -47,6 +45,7 @@ function GetPackageList() {
                 setLoading(false);
             });
     };
+
     const handleBuy = (pkg) => {
         navigate(`/tourCustomerForm?packageId=${pkg._id}`);
     };
@@ -69,7 +68,12 @@ function GetPackageList() {
                     className="w-1/3 p-4 bg-orange-500 hover:bg-orange-600 text-white rounded-lg shadow-md hover:shadow-xl transition duration-300 ease-in-out"
                 >
                     Search
-                </button>
+                </button>  {/*<button
+                    onClick={handleGetTourListClick}
+                    className="w-1/3 p-4 bg-green-500 hover:bg-green-600 text-white rounded-lg shadow-md hover:shadow-xl transition duration-300 ease-in-out"
+                >
+                    Get Tour List
+                </button>*/}
             </div>
             {/* Show PulseLoader while data is loading */}
             {loading ? (

@@ -1022,6 +1022,8 @@ app.use('/uploads/package/', express.static('uploads'));
 // POST route to handle form submission
 app.post('/api/packages', upload.single('picture'), async (req, res) => {
   try {
+    console.log('Received file:', req.file); // Debugging the file upload
+    console.log('Request body:', req.body); // Debugging the body data
 
     const { packageName, description, price, departureDate, departureTime, arrivalDate, arrivalTime, location } = req.body;
 
@@ -1269,6 +1271,20 @@ app.post("/api/tour-package-payment", async (req, res) => {
     console.error("Error saving payment:", error);
     res.status(500).json({ error: "Failed to save payment" });
   }
+});
+// Assuming you have a "TourPayment" model in your MongoDB
+
+
+app.get("/api/payments/:id", async (req, res) => {
+    try {
+        const payment = await TourPayment.findById(req.params.id).populate('customerId packageId');
+        if (!payment) {
+            return res.status(404).json({ message: "Payment not found" });
+        }
+        res.json(payment);
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching payment data", error: error.message });
+    }
 });
 
 try {
