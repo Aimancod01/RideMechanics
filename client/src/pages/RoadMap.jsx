@@ -29,11 +29,11 @@ const mechanicIcon = new L.Icon({
 
 // Mechanics Data
 const mechanics = [
-  { id: 1, name: "John’s Garage", lat: 31.5204, lng: 74.3587, specialty: "Engine Repair", rating: 4.5, phone: "0300-1234567" },
-  { id: 2, name: "Quick Fix Auto", lat: 31.5156, lng: 74.375, specialty: "Tire Change", rating: 4.7, phone: "0321-9876543" },
-  { id: 3, name: "24/7 Auto Repair", lat: 31.5444, lng: 74.3612, specialty: "Battery Replacement", rating: 4.3, phone: "0302-5555555" },
-  { id: 4, name: "Lahore Auto Clinic", lat: 31.5598, lng: 74.3306, specialty: "Oil Change", rating: 4.6, phone: "0333-2244668" },
-  { id: 5, name: "Mechanic Masters", lat: 31.5, lng: 74.37, specialty: "AC Repair", rating: 4.8, phone: "0311-4455667" },
+  { id: 1, name: "John’s Garage", lat: 31.5204, lng: 74.3587, specialty: "Engine Repair", rating: 4.5, phone: "0300-1234567", image: "https://via.placeholder.com/150?text=John's+Garage" },
+  { id: 2, name: "Quick Fix Auto", lat: 31.5156, lng: 74.375, specialty: "Tire Change", rating: 4.7, phone: "0321-9876543", image: "https://via.placeholder.com/150?text=Quick+Fix+Auto" },
+  { id: 3, name: "24/7 Auto Repair", lat: 31.5444, lng: 74.3612, specialty: "Battery Replacement", rating: 4.3, phone: "0302-5555555", image: "https://via.placeholder.com/150?text=24/7+Auto+Repair" },
+  { id: 4, name: "Lahore Auto Clinic", lat: 31.5598, lng: 74.3306, specialty: "Oil Change", rating: 4.6, phone: "0333-2244668", image: "https://via.placeholder.com/150?text=Lahore+Auto+Clinic" },
+  { id: 5, name: "Mechanic Masters", lat: 31.5, lng: 74.37, specialty: "AC Repair", rating: 4.8, phone: "0311-4455667", image: "https://via.placeholder.com/150?text=Mechanic+Masters" },
 ];
 
 const RecenterMap = ({ location }) => {
