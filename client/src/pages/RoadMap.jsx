@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup, Circle, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, Circle, useMap, Polyline } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import Hero from "../components/Hero";
@@ -169,6 +169,7 @@ const RoadMap = () => {
                 </Popup>
               </Marker>
             ))}
+            {selectedMechanic && <Polyline positions={[userLocation, [selectedMechanic.lat, selectedMechanic.lng]]} pathOptions={{ color: "orange", weight: 4 }} />}
           </MapContainer>
         </div>
       ) : userType === "mechanic" ? (
