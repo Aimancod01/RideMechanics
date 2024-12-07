@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
+import { User, Mail, MapPin, IdCard } from "lucide-react"; // Importing icons from react-lucide
 function TourCustomerForm() {
     const [searchParams] = useSearchParams();
-    const packageId = searchParams.get("packageId"); const [packageDetails, setPackageDetails] = useState(null); // State to store package details
+    const packageId = searchParams.get("packageId");
+     const [packageDetails, setPackageDetails] = useState(null); // State to store package details
     const [formData, setFormData] = useState({
         firstName: "",
         lastName: "",
@@ -72,79 +74,80 @@ if(packageId){
         }
     };
     
-    return (
+    return (<div className="container mx-auto px-4 py-8">
         <div className="max-w-lg mx-auto mt-8 p-6 bg-white shadow-lg rounded-lg">
-            <h2 className="text-2xl font-bold mb-4 text-orange-600 text-center">Tour Customer Information</h2>
+            <h2 className="text-2xl sm:text-3xl font-bold text-orange-600 text-center">Tour Customer Information</h2>
             {packageDetails && (
-                <div className="mb-6">
-                    <h3 className="text-lg font-bold">Selected Package:</h3>
-                    <p>{packageDetails.packageName}</p>
-                    <p><strong>Price:</strong> {packageDetails.price}</p>
+                <div className="mb-6 bg-orange-50 p-4 rounded-lg shadow-inner">
+                    <h3 className="text-lg font-bold text-orange-700">Selected Package:</h3>
+                    <p className="text-gray-700">  <strong>Package Name:</strong> {packageDetails.packageName}</p>
+                    <p className="text-gray-700"><strong>Price:</strong> {packageDetails.price}</p>
                 </div>
             )}
-            <form onSubmit={handleSubmit}>
-                <div className="mb-4">
-                    <label className="block text-sm font-bold">First Name</label>
+            <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="space-y-1 sm:space-y-2">  <label className="block text-sm font-medium text-gray-700">First Name</label>  <div className="relative"><User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  
                     <input
                         type="text"
-                        name="firstName"
+                        name="firstName"id="firstName"
                         value={formData.firstName}
-                        onChange={handleChange}
-                        className="w-full p-2 border rounded"
+                        onChange={handleChange} placeholder="Enter your first name"
+                        className="pl-10 w-full px-3 py-2 sm:py-2.5 border border-gray-300 rounded-md shadow-sm text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition duration-300"
                         required
-                    />
+                    /></div>
                 </div>
-                <div className="mb-4">
-                    <label className="block text-sm font-bold">Last Name</label>
+                <div className="space-y-2">
+                    <label  htmlFor="lastName" className="block text-sm font-medium text-gray-700">Last Name</label>     <div className="relative"><User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"  />
                     <input
                         type="text"
-                        name="lastName"
+                        name="lastName"id="lastName"
                         value={formData.lastName}
-                        onChange={handleChange}
-                        className="w-full p-2 border rounded"
+                        onChange={handleChange}  placeholder="Enter your last name"
+                        className="pl-10 w-full px-3 py-2 sm:py-2.5 border border-gray-300 rounded-md shadow-sm text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition duration-300"
                         required
-                    />
+                    /> </div>
                 </div>
-                <div className="mb-4">
-                    <label className="block text-sm font-bold">Email</label>
+                <div className="space-y-2">
+                    <label   htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label><div className="relative">  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"  />
                     <input
                         type="email"
-                        name="email"
+                        name="email" id="email"
                         value={formData.email}
-                        onChange={handleChange}
-                        className="w-full p-2 border rounded"
+                        onChange={handleChange}  placeholder="Enter your email"
+                        className="pl-10 w-full px-3 py-2 sm:py-2.5 border border-gray-300 rounded-md shadow-sm text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition duration-300"
                         required
-                    />
+                    /></div>
                 </div>
-                <div className="mb-4">
-                    <label className="block text-sm font-bold">CNIC</label>
+                <div className="space-y-2">
+                    <label   htmlFor="cnic" className="block text-sm font-medium text-gray-700">CNIC</label> <div className="relative"> <IdCard className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"  />
                     <input
                         type="text"
-                        name="cnic"
+                        name="cnic" id="cnic"
                         value={formData.cnic}
-                        onChange={handleChange}
-                        className="w-full p-2 border rounded"
+                        onChange={handleChange}   placeholder="Enter your CNIC"    maxLength={15} pattern="\d{5}-\d{7}-\d"
+    title="Enter CNIC in format XXXXX-XXXXXXX-X"
+                        className="pl-10 w-full px-3 py-2 sm:py-2.5 border border-gray-300 rounded-md shadow-sm text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition duration-300"
                         required
-                    />
+                    />                </div>
                 </div>
-                <div className="mb-4">
-                    <label className="block text-sm font-bold">Address</label>
-                    <textarea
-                        name="address"
+                <div className="space-y-2">
+                    <label   htmlFor="address" className="block text-sm font-medium text-gray-700">Address</label> <div className="relative">   <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"  />
+                    <input
+                        name="address"id="address"
                         value={formData.address}
-                        onChange={handleChange}
-                        className="w-full p-2 border rounded"
+                        onChange={handleChange} placeholder="123 Main St, City, Country" 
+                        className="pl-10 w-full px-3 py-2 sm:py-2.5 border border-gray-300 rounded-md shadow-sm text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition duration-300"
                         required
-                    ></textarea>
+                    />              </div>
                 </div>
                 <button
                     type="submit"
-                    className="w-full bg-orange-500 text-white p-2 rounded hover:bg-orange-600"
+                    className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 sm:py-3 px-4 sm:px-6 rounded-lg text-sm sm:text-base transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 flex items-center justify-center"
                 >
                     Submit
                 </button>
             </form>
-        </div>
+        </div></div>
     );
 }
 

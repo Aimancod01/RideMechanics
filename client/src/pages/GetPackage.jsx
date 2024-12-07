@@ -66,7 +66,7 @@ function GetPackageList() {
       <div className="mb-8 w-full max-w-4xl flex justify-center items-center space-x-4">
         <input
           type="text"
-          placeholder="Search by package name or price"
+          placeholder="Search by package price"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="w-2/3 p-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-600 text-lg"

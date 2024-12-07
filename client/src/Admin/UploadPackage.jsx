@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { Calendar, DollarSign, FileText, ImageIcon, MapPin, Clock, HandCoins, } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 function UploadPackage() {
   const [formData, setFormData] = useState({
     packageName: '',
@@ -14,7 +18,7 @@ function UploadPackage() {
     location: '',
     picture: null,
   });
-  const [message, setMessage] = useState(null);  // Added state for message
+  const navigate = useNavigate();
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -45,121 +49,114 @@ function UploadPackage() {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       console.log(response.data)
-      setMessage( 'Package uploaded successfully!' );
+      toast.success( 'Package uploaded successfully!' ); navigate('/packageList');
     } catch (error) {
       console.error('Error uploading package:', error);
-      setMessage('Failed to upload package. Please try again.');  // Show error 
+      toast.error('Failed to upload package. Please try again.');  // Show error 
     }
   };
 
-  return (
-    <div className="max-w-xl mx-auto mt-8 p-6 bg-white shadow-lg rounded-lg ">
-      <h1 className="text-2xl font-bold text-center text-orange-600 mb-4">Upload Car Rental Package</h1>
-      {message && (
-        <div
-          className={`p-4 mb-4 rounded-md ${message.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-            }`}
-        >
-          {message.text}
-        </div>
-      )}
+  return (<div className="container mx-auto px-4 py-8">
+    <div className="max-w-xl mx-auto mt-8 p-6 bg-white shadow-lg rounded-lg border border-gray-200 ">
+      <h1 className="text-2xl sm:text-3xl font-bold text-orange-600 text-center">Upload Tour Package</h1>
+      
       <form className="space-y-6" onSubmit={handleSubmit} >
-        
+      <div className="space-y-1 sm:space-y-2">
         <div className="form-group">
-          <label htmlFor="packageName" className="block text-gray-700 font-medium">Package Name:</label>
+          <label htmlFor="packageName" className="block text-sm font-medium text-gray-700">Package Name:</label> <div className="relative">  <FileText className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"  />
           <input
             type="text"
             id="packageName"
             name="packageName"
             value={formData.packageName}
             onChange={handleChange}
-            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+            className="pl-10 w-full px-3 py-2 sm:py-2.5 border border-gray-300 rounded-md shadow-sm text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition duration-300"
             placeholder="Enter package name"
             required
           />
         </div>
-
+        </div> </div>
         <div className="form-group">
-          <label htmlFor="description" className="block text-gray-700 font-medium">Description:</label>
+          <label htmlFor="description" className="block text-sm font-medium text-gray-700">Description:</label> <div className="relative">   <FileText className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"  />
           <input
             type="text"
             id="description"
             name="description"
             value={formData.description}
             onChange={handleChange}
-            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+            className="pl-10 w-full px-3 py-2 sm:py-2.5 border border-gray-300 rounded-md shadow-sm text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition duration-300"
             placeholder="Enter description"
             required
           />
-        </div>
+        </div> </div>
         <div className="form-group">
-          <label htmlFor="price" className="block text-gray-700 font-medium">Price:</label>
+          <label htmlFor="price" className="block text-sm font-medium text-gray-700">Price:</label> <div className="relative">  < HandCoins className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
           <input
             type="text"
             id="price"
             name="price"
-            value={formData.dprice}
+            value={formData.price}
             onChange={handleChange}
-            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+            className="pl-10 w-full px-3 py-2 sm:py-2.5 border border-gray-300 rounded-md shadow-sm text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition duration-300"
             placeholder="Enter price"
             required
           />
-        </div>
+        </div> </div>
         <div className="mb-4">
-          <label className="block text-sm font-bold mb-2">Departure Date</label>
+          <label className="block text-sm font-medium text-gray-700">Departure Date</label> <div className="relative">  <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"  />
           <DatePicker
             selected={formData.departureDate}
             onChange={(date) => handleDateChange('departureDate', date)}
-            className="w-full px-3 py-2 border"
+            className="pl-10 w-full px-3 py-2 sm:py-2.5 border border-gray-300 rounded-md shadow-sm text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition duration-300"
           />
         </div>
-
+        </div>
         <div className="mb-4">
-          <label className="block text-sm font-bold mb-2">Departure Time</label>
+          <label className="block text-sm font-medium text-gray-700">Departure Time</label><div className="relative"><Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
           <input
             type="text"
-            name="departureTime"
+            name="departureTime" placeholder="Departure Time"
             value={formData.departureTime}
             onChange={handleChange}
-            className="w-full px-3 py-2 border"
+            className="pl-10 w-full px-3 py-2 sm:py-2.5 border border-gray-300 rounded-md shadow-sm text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition duration-300"
             required
           />
-        </div>
+        </div> </div>
 
         <div className="mb-4">
-          <label className="block text-sm font-bold mb-2">Arrival Date</label>
+          <label className="block text-sm font-medium text-gray-700">Arrival Date</label><div className="relative">  <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"  />
           <DatePicker
             selected={formData.arrivalDate}
             onChange={(date) => handleDateChange('arrivalDate', date)}
-            className="w-full px-3 py-2 border"
+            className="pl-10 w-full px-3 py-2 sm:py-2.5 border border-gray-300 rounded-md shadow-sm text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition duration-300"
           />
-        </div>
+        </div> </div>
         <div className="mb-4">
-          <label className="block text-sm font-bold mb-2">Arrival Time</label>
+          <label className="block text-sm font-medium text-gray-700">Arrival Time</label><div className="relative"><Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"  />
           <input
             type="text"
             name="arrivalTime"
             value={formData.arrivalTime}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border"
+            onChange={handleChange} placeholder="Arrival Time"
+            className="pl-10 w-full px-3 py-2 sm:py-2.5 border border-gray-300 rounded-md shadow-sm text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition duration-300"
             required
           />
-        </div>
+        </div> </div>
         <div className="mb-4">
-        <label className="block text-sm font-bold mb-2">Location </label>
+        <label className="block text-sm font-medium text-gray-700">Location </label><div className="relative"> <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
         <input
           type="text"
           name="location"
           value={formData.location}
-          onChange={handleChange}
-          className="w-full px-3 py-2 border"
+          onChange={handleChange} placeholder="123 Main St, City, Country"
+          className="pl-10 w-full px-3 py-2 sm:py-2.5 border border-gray-300 rounded-md shadow-sm text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition duration-300"
         />
-      </div>
+      </div> </div>
       <div className="mb-4">
-        <label className="block text-sm font-bold mb-2">Picture</label>
-        <input type="file" name="picture" onChange={handleFileChange} className="w-full px-3 py-2 border" />
+        <label className="block text-sm font-medium text-gray-700">Picture</label><div className="relative">  
+        <input type="file" name="picture" onChange={handleFileChange} className="pl-10 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm text-sm sm:text-base focus:ring-2 focus:ring-orange-500" />
       </div>
-
+      </div>
         <div className="form-group">
           <button
             type="submit"
@@ -169,7 +166,7 @@ function UploadPackage() {
           </button>
         </div>
       </form>
-    </div>
+    </div> <ToastContainer position="top-right" autoClose={3000} /></div>
   );
 }
 
