@@ -120,7 +120,7 @@ function TourPackagePayment({ packageId, customerId }) {
             <div className="mb-6 bg-orange-50 p-4 rounded-lg shadow-inner">
                 <h3 className="text-lg font-bold text-orange-600">Package Details:</h3>
                 <p className="text-gray-700"><strong>Package Name:</strong> {selectedPackage.packageName}</p>
-                <p className="text-gray-700"><strong>Price:</strong> ${selectedPackage.price}</p>
+                <p className="text-gray-700"><strong>Price:</strong> {selectedPackage.price}</p>
             </div>
             <div className="mb-6 bg-orange-50 p-4 rounded-lg shadow-inner">
                 <h3 className="text-lg font-bold text-orange-600"> <User className="inline-block mr-2" />Customer Details:</h3>
