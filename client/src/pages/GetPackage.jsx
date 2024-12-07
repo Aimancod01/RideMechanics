@@ -89,7 +89,7 @@ function GetPackageList() {
               <div
                 key={pkg._id}
                 onClick={() => handleCardClick(pkg)}
-                className="bg-white shadow-lg rounded-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-xl cursor-pointer"
+                className="bg-white shadow-lg rounded-lg overflow-hidden transform transition-all duration-500 hover:scale-105 hover:shadow-2xl cursor-pointer w-full max-w-xs sm:max-w-sm md:max-w-md"
               >
                 {pkg.picture && (
                   <img
@@ -106,6 +106,9 @@ function GetPackageList() {
                   <p className="text-gray-600">
                     <strong>Location:</strong> {pkg.location}
                   </p>
+                  <p className="text-gray-600">
+                    <strong>Departure Date:</strong> {new Date(pkg.departureDate).toLocaleDateString()}
+                  </p>
                 </div>
               </div>
             ))
@@ -121,14 +124,15 @@ function GetPackageList() {
           isOpen={!!selectedPackage}
           onRequestClose={handleModalClose}
           contentLabel="Package Details"
-          className="fixed inset-0 flex items-center justify-center p-4 bg-gray-800 bg-opacity-75"
+          className="fixed inset-0 flex items-center justify-center p-4 bg-gray-800 bg-opacity-75 transition-all duration-300 transform"
         >
-          <div className="bg-white rounded-lg shadow-lg w-full max-w-2xl p-6 relative">
+          <div className="bg-white rounded-lg shadow-lg w-full max-w-2xl p-6 relative transform transition-transform duration-300 ease-in-out scale-95 hover:scale-100">
+            {/* Updated Close Button */}
             <button
               onClick={handleModalClose}
-              className="absolute top-4 right-4 bg-red-500 text-white p-2 rounded-full hover:bg-red-600"
+              className="absolute top-4 right-4 w-10 h-10 bg-orange-500 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-orange-600 transition duration-300 ease-in-out focus:outline-none"
             >
-              &times;
+              <span className="text-2xl font-bold">×</span>
             </button>
             {selectedPackage.picture && (
               <img
@@ -142,7 +146,7 @@ function GetPackageList() {
               <strong>Description:</strong> {selectedPackage.description}
             </p>
             <p className="text-gray-600 mb-2">
-              <strong>Price:</strong>${selectedPackage.price}
+              <strong>Price:</strong>{selectedPackage.price} PKR
             </p>
             <p className="text-gray-600 mb-2">
               <strong>Departure Date:</strong> {new Date(selectedPackage.departureDate).toLocaleDateString()}
