@@ -24,10 +24,22 @@ const UserSchema = new mongoose.Schema({
     type: String,
     default: null,
   },
+  phone: {
+    type: String,
+    default: null,
+  },
 
   speciality: {
     type: String,
     default: null,
+  },
+  lat: {
+    type: Number,
+    default: null, // Stores the latitude of the mechanic
+  },
+  lng: {
+    type: Number,
+    default: null, // Stores the longitude of the mechanic
   },
 });
 

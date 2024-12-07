@@ -43,7 +43,8 @@ import UploadPackage from "./Admin/UploadPackage.jsx";
 import PaymentWrapper from "./pages/PaymentWrapper.jsx";
 import ProtectedRoute from "./pages/ProtectedRoutes.jsx";
 import CarForm from "./Admin/CarForm";
-import Mechanics from "./pages/Mechanics.jsx";BookedTourPackageList
+import Mechanics from "./pages/Mechanics.jsx";
+BookedTourPackageList;
 import BookedTourPackageList from "./pages/BookedTourPackage.jsx";
 function App() {
   const rentalId = "unique-rental-id"; // Replace with actual rentalIdTourPackageForm
@@ -152,8 +153,8 @@ function App() {
           element: <Chat rentalId={rentalId} user={user} />,
         },
         {
-          path: "/Dashboard",
-          element: <Dashboard />,
+          path: "/dashboard",
+          element: <ProtectedRoute element={<Dashboard />} requiredRole="admin" />,
         },
         {
           path: "/cars",
@@ -212,7 +213,8 @@ function App() {
         {
           path: "/mechanics",
           element: <Mechanics />,
-        }, {
+        },
+        {
           path: "//tour/list",
           element: <BookedTourPackageList />,
         },

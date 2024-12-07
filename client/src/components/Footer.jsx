@@ -43,7 +43,10 @@ function Footer() {
               <strong>Email:</strong> support@exploreride.com
             </p>
             <p className="text-sm text-gray-200">
-              <strong>Phone:</strong> +1 (123) 456-7890
+              <strong>WhatsApp Number:</strong> +14155238886
+            </p>
+            <p className="text-sm text-gray-200">
+              <strong>Contact Number:</strong> +1 888-572-2127{" "}
             </p>
             <p className="text-sm text-gray-200">
               <strong>Address:</strong> 123 Main Street, City, Country

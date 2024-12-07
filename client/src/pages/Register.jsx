@@ -130,38 +130,15 @@ function Register() {
           </div>
 
           <div>
-            <Label htmlFor="userType" value="Select user type" className="text-gray-600 font-semibold" />
-            <select id="userType" name="userType" className="mt-2 p-3 w-full border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2" {...register("userType", { required: "User type is required" })}>
+            <Label htmlFor="userType" value="Type" className="text-gray-600 font-semibold" />
+            <select disabled id="userType" name="userType" className="mt-2 p-3 w-full border bg-gray-200 border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2" {...register("userType", { required: "User type is required" })}>
               <option value="" disabled selected>
                 Select a user type
               </option>
               <option value="user">User</option>
-              <option value="mechanic">Mechanic</option>
             </select>
             {errors.userType && <p className="text-red-500 text-sm">{errors.userType.message}</p>}
           </div>
-
-          {userType === "mechanic" && (
-            <>
-              <div>
-                <Label htmlFor="title" value="Shop Title" className="text-gray-600 font-semibold" />
-                <TextInput id="title" name="title" type="text" placeholder="E.g., Auto Workshop" className="mt-2 p-3 w-full border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500" {...register("title", { required: "Shop Title is required" })} />
-                {errors.title && <p className="text-red-500 text-sm">{errors.title.message}</p>}
-              </div>
-              <div>
-                <Label htmlFor="speciality" value="Speciality" className="text-gray-600 font-semibold" />
-                <TextInput
-                  id="speciality"
-                  name="speciality"
-                  type="text"
-                  placeholder="E.g., Engine Repair"
-                  className="mt-2 p-3 w-full border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
-                  {...register("speciality", { required: "Speciality is required" })}
-                />
-                {errors.speciality && <p className="text-red-500 text-sm">{errors.speciality.message}</p>}
-              </div>
-            </>
-          )}
 
           <div className="flex justify-between items-center">
             <p className="text-sm text-gray-600">

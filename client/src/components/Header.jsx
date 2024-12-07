@@ -5,9 +5,7 @@ function Header() {
   function handleLogout() {
     localStorage.removeItem("userinfo");
     toast.success("Logout Successfully");
-    setTimeout(() => {
-      navigate("/login");
-    }, 1000);
+    navigate("/login");
   }
   return (
     <header className="bg-orange-500 p-5">

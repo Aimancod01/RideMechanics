@@ -5,6 +5,7 @@ import L from "leaflet";
 import Hero from "../components/Hero";
 import MechanicCards from "../components/MechanicCards";
 import MechanicProfile from "../components/MechanicProfile";
+import axios from "axios";
 
 // Leaflet icon settings
 delete L.Icon.Default.prototype._getIconUrl;
@@ -28,25 +29,31 @@ const mechanicIcon = new L.Icon({
 });
 
 // Mechanics Data
-const mechanics = [
-  { id: 1, name: "John’s Garage", lat: 31.5204, lng: 74.3587, specialty: "Engine Repair", rating: 4.5, phone: "0300-1234567", image: "https://via.placeholder.com/150?text=John's+Garage" },
-  { id: 2, name: "Quick Fix Auto", lat: 31.5156, lng: 74.375, specialty: "Tire Change", rating: 4.7, phone: "0321-9876543", image: "https://via.placeholder.com/150?text=Quick+Fix+Auto" },
-  { id: 3, name: "24/7 Auto Repair", lat: 31.5444, lng: 74.3612, specialty: "Battery Replacement", rating: 4.3, phone: "0302-5555555", image: "https://via.placeholder.com/150?text=24/7+Auto+Repair" },
-  { id: 4, name: "Lahore Auto Clinic", lat: 31.5598, lng: 74.3306, specialty: "Oil Change", rating: 4.6, phone: "0333-2244668", image: "https://via.placeholder.com/150?text=Lahore+Auto+Clinic" },
-  { id: 5, name: "Mechanic Masters", lat: 31.5, lng: 74.37, specialty: "AC Repair", rating: 4.8, phone: "0311-4455667", image: "https://via.placeholder.com/150?text=Mechanic+Masters" },
-];
 
 const RecenterMap = ({ location }) => {
   const map = useMap();
   useEffect(() => {
     if (location) {
-      map.setView(location, 13); // Update map view to new location
+      map.setView(location, 14); // Update map view to new location
     }
   }, [location, map]);
   return null;
 };
 
 const RoadMap = () => {
+  const [mechanics, setMechanics] = useState([]);
+  async function fetchMechanics() {
+    try {
+      const response = await axios.get("http://localhost:5000/api/v1/getUsers");
+      setMechanics(response.data.users);
+    } catch (error) {
+      console.error("Error fetching mechanics:", error);
+    }
+  }
+
+  useEffect(() => {
+    fetchMechanics();
+  }, []);
   const [userLocation, setUserLocation] = useState([31.5204, 74.3587]); // Default to Lahore
   const [selectedMechanic, setSelectedMechanic] = useState(null);
   const [activeTab, setActiveTab] = useState("list"); // Manage tabs
@@ -95,62 +102,67 @@ const RoadMap = () => {
       setUserRequests([userRequest]); // Add user request for mechanic
     }
   }, [selectedMechanic]);
+  console.log(
+    "Filtered Mechanics:",
+    mechanics.filter((mechanic) => mechanic.userType === "mechanic"),
+  );
 
   return (
     <div>
-      {userType === "user" ? (
-        <div className="grid grid-cols-1 lg:grid-cols-2 my-8">
-          {/* Mechanics List and Details */}
-          <div className="flex justify-center items-center">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-full lg:w-4/4 flex flex-col min-h-[400px]">
-              {/* Tabs */}
-              <div className="flex border-b mb-4">
-                <button className={`px-4 py-2 ${activeTab === "list" ? "text-orange-600 font-bold border-b-2 border-orange-600" : "text-gray-500"}`} onClick={() => setActiveTab("list")}>
-                  All Mechanics
-                </button>
-                <button className={`px-4 py-2 ${activeTab === "detail" ? "text-orange-600 font-bold border-b-2 border-orange-600" : "text-gray-500"}`} onClick={() => setActiveTab("detail")}>
-                  Mechanic Details
-                </button>
-              </div>
-
-              {activeTab === "list" ? (
-                <div className="flex flex-wrap gap-4 justify-center">
-                  <MechanicCards mechanics={mechanics} selectMechanic={setSelectedMechanic} />
-                </div>
-              ) : selectedMechanic ? (
-                <MechanicProfile mechanic={selectedMechanic} messages={messages.conversation} setMessages={setMessages} sendMessage={sendMessage} />
-              ) : (
-                <div className="text-center text-orange-600 font-semibold">
-                  <p>No mechanic selected.</p>
-                  <p>Select a mechanic from the list or map to view their details.</p>
-                </div>
-              )}
+      <div className="grid grid-cols-1 lg:grid-cols-2 my-8">
+        {/* Mechanics List and Details */}
+        <div className="flex justify-center items-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full lg:w-4/4 flex flex-col min-h-[400px]">
+            {/* Tabs */}
+            <div className="flex border-b mb-4">
+              <button className={`px-4 py-2 ${activeTab === "list" ? "text-orange-600 font-bold border-b-2 border-orange-600" : "text-gray-500"}`} onClick={() => setActiveTab("list")}>
+                All Mechanics
+              </button>
+              <button className={`px-4 py-2 ${activeTab === "detail" ? "text-orange-600 font-bold border-b-2 border-orange-600" : "text-gray-500"}`} onClick={() => setActiveTab("detail")}>
+                Mechanic Details
+              </button>
             </div>
+
+            {activeTab === "list" ? (
+              <div className="flex flex-wrap gap-4 justify-center">
+                <MechanicCards mechanics={mechanics} selectMechanic={setSelectedMechanic} />
+              </div>
+            ) : selectedMechanic ? (
+              <MechanicProfile mechanic={selectedMechanic} messages={messages.conversation} setMessages={setMessages} sendMessage={sendMessage} />
+            ) : (
+              <div className="text-center text-orange-600 font-semibold">
+                <p>No mechanic selected.</p>
+                <p>Select a mechanic from the list or map to view their details.</p>
+              </div>
+            )}
           </div>
+        </div>
 
-          {/* Map */}
-          <MapContainer center={userLocation} zoom={13} scrollWheelZoom={false} className="h-[500px] w-full lg:w-4/4 lg:h-full min-h-[400px]">
-            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="&copy; OpenStreetMap contributors" />
+        {/* Map */}
+        <MapContainer center={userLocation} zoom={13} scrollWheelZoom={false} className="h-[500px] w-full lg:w-4/4 lg:h-full min-h-[400px]">
+          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="&copy; OpenStreetMap contributors" />
 
-            {/* Automatically Recenter Map */}
-            <RecenterMap location={userLocation} />
+          {/* Automatically Recenter Map */}
+          <RecenterMap location={userLocation} />
 
-            {/* User Location Marker */}
-            <Marker position={userLocation} icon={userIcon}>
-              <Popup>Your Location</Popup>
-            </Marker>
-            <Circle
-              center={userLocation}
-              radius={500}
-              pathOptions={{
-                color: "orange",
-                fillColor: "orange",
-                fillOpacity: 0.3,
-              }}
-            />
+          {/* User Location Marker */}
+          <Marker position={userLocation} icon={userIcon}>
+            <Popup>Your Location</Popup>
+          </Marker>
+          <Circle
+            center={userLocation}
+            radius={500}
+            pathOptions={{
+              color: "orange",
+              fillColor: "orange",
+              fillOpacity: 0.3,
+            }}
+          />
 
-            {/* Mechanics Markers */}
-            {mechanics.map((mechanic) => (
+          {/* Mechanics Markers */}
+          {mechanics
+            .filter((mechanic) => mechanic?.userType === "mechanic")
+            .map((mechanic) => (
               <Marker
                 key={mechanic.id}
                 position={[mechanic.lat, mechanic.lng]}
@@ -169,28 +181,9 @@ const RoadMap = () => {
                 </Popup>
               </Marker>
             ))}
-            {selectedMechanic && <Polyline positions={[userLocation, [selectedMechanic.lat, selectedMechanic.lng]]} pathOptions={{ color: "orange", weight: 4 }} />}
-          </MapContainer>
-        </div>
-      ) : userType === "mechanic" ? (
-        <div className="grid grid-cols-1 lg:grid-cols-2 my-8">
-          <div className="flex justify-center items-center">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-full lg:w-4/4 flex flex-col min-h-[400px]">
-              <div className="flex gap-2 items-center">
-                <h1 className="text-xl font-semibold text-orange-600">User Requests</h1>
-              </div>
-              <div className="flex flex-col gap-2">
-                {userRequests.map((request) => (
-                  <div key={request.id} className="flex gap-2 items-center">
-                    <div className="text-gray-800">{request.name} needs help at your location!</div>
-                    <button className="bg-orange-600 text-white rounded px-2 py-1 text-sm">Accept</button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      ) : null}
+          {selectedMechanic && <Polyline positions={[userLocation, [selectedMechanic.lat, selectedMechanic.lng]]} pathOptions={{ color: "orange", weight: 4 }} />}
+        </MapContainer>
+      </div>
     </div>
   );
 };

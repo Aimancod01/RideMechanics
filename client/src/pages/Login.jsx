@@ -35,15 +35,21 @@ function Login() {
   const handleLogin = async (data) => {
     try {
       const response = await axios.post("http://localhost:5000/api/v1/login", data);
+      console.log(response);
       if (response.status === 200) {
         localStorage.setItem("userinfo", JSON.stringify(response.data.user));
+        localStorage.setItem("role", response.data.user.role);
+
         toast.success("Login Successfully");
-        setTimeout(() => navigate("/"), 1000);
+        if (response.data.user.role === "admin") {
+          navigate("/dashboard");
+        } else {
+          setTimeout(() => {
+            navigate("/");
+          }, 2000);
+        }
       }
-    } catch (error) {
-      const errorMessage = error.response?.status === 401 ? "Invalid Credentials" : "An error occurred";
-      toast.error(errorMessage);
-    }
+    } catch (error) {}
   };
 
   // Password reset handler
