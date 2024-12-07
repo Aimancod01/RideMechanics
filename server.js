@@ -1217,7 +1217,7 @@ app.post("/api/tour-package-payment", async (req, res) => {
 
     const paymentIntent = await stripe.paymentIntents.create({
       amount, // Amount in cents
-      currency: "usd",
+      currency: "pkr",
       payment_method_types: ["card"],
       receipt_email: customerEmail,  description: `Payment for ${customerName}`,
     });
@@ -1280,7 +1280,14 @@ app.get("/api/payments/:id", async (req, res) => {
         res.status(500).json({ message: "Error fetching payment data", error: error.message });
     }
 });
-
+app.get("/api/tour-payments", async (req, res) => {
+  try {
+    const payments = await TourPayment.find().populate('customerId packageId');
+    res.status(200).json(payments);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error retrieving payments' });}
+  });
 try {
   await mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,

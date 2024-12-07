@@ -42,6 +42,11 @@ const Sidebar = () => {
           <Package size={36} className="text-orange-600 mr-4" />
           <span className="text-sm font-medium text-orange-700">Tour Packages</span>
         </Link>
+        {/* Tour Packages */}
+        <Link to="/bookingPackages" className="flex items-center bg-gradient-to-br from-orange-100 to-white rounded-lg shadow-md p-4 transition transform hover:scale-105 hover:shadow-lg">
+          <Calendar size={36} className="text-orange-600 mr-4" />
+          <span className="text-sm font-medium text-orange-700">View Tour Packages</span>
+        </Link>
 
         {/* Mechanics */}
         <Link to="/mechanics" className="flex items-center bg-gradient-to-br from-orange-100 to-white rounded-lg shadow-md p-4 transition transform hover:scale-105 hover:shadow-lg">

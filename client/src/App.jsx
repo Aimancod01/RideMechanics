@@ -37,6 +37,7 @@ import ReviewForm from "./components/ReviewForm";
 import Chat from "./components/Chat";
 import GetBookingsByEmail from "./components/GetBookingsByEmail";
 import EditCar from "./Admin/EditCar";
+import BookingTourPackages from "./Admin/BookingTourPackages";
 import Confirmation from "./components/Confirmation";
 import PackageList from "./Admin/PackageList.jsx";
 import UploadPackage from "./Admin/UploadPackage.jsx";
@@ -217,6 +218,9 @@ function App() {
         {
           path: "//tour/list",
           element: <BookedTourPackageList />,
+        },{
+          path: "/bookingPackages",
+          element: <BookingTourPackages />,
         },
       ],
     },
