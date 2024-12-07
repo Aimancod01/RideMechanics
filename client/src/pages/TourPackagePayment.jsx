@@ -58,7 +58,7 @@ function TourPackagePayment({ packageId, customerId }) {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    amount: totalPrice , customerName: `${customer.firstName} ${customer.lastName}`,
+                    amount: totalPrice*100 , customerName: `${customer.firstName} ${customer.lastName}`,
                     customerEmail: customer.email,
                 }),
             });
