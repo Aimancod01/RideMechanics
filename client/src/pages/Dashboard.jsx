@@ -8,10 +8,10 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
 const Dashboard = () => {
   // Mock data for cards
   const stats = [
-    { title: "Total Cars", value: 48 },
-    { title: "Bookings Today", value: 12 },
-    { title: "Mechanics", value: 8 },
-    { title: "Tours", value: 3 },
+    { title: "Total Cars", value: 12 },
+    { title: "Bookings Today", value: 5 },
+    { title: "Mechanics", value: 7 },
+    { title: "Tours", value: 9 },
   ];
 
   // Data for the graph
