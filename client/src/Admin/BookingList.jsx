@@ -58,6 +58,9 @@ const BookingList = () => {
           bookings.map((booking) => (
             <div key={booking._id} className="bg-white rounded-lg shadow-md hover:shadow-lg transition duration-300 transform hover:scale-105 relative overflow-hidden">
               <div className="p-5 space-y-3">
+              <div className="text-sm font-semibold text-white bg-green-500 rounded-full w-fit px-3 py-1 mb-2">
+                      Paid
+                    </div>
                 <h2 className="text-lg font-semibold text-orange-600">{booking.car?.carName} - {booking.car?.carModel}({booking.car?.carNumber})</h2>
                 <p className="text-gray-700 flex items-center"><User className="w-4 h-4 mr-2 text-orange-500" /><span className="font-semibold">Name:</span> {booking.customer?.fullName || 'Not Found'}</p>
                 <p className="text-gray-700 flex items-center"><Mail className="w-4 h-4 mr-2 text-orange-500" /><span className="font-semibold">Email:</span> {booking.customer?.email || 'Not Found'}</p>
@@ -66,11 +69,11 @@ const BookingList = () => {
                 <p className="text-gray-700 flex items-center"><CreditCard className="w-4 h-4 mr-2 text-orange-500" /><span className="font-semibold">Total Price:</span> Rs {booking.car?.price || 'Not Found'}</p>
                 <p className="text-gray-700 flex items-center"><Calendar className="w-4 h-4 mr-2 text-orange-500" /><span className="font-semibold">Pickup Date:</span> {booking.searchData?.pickupDate ? new Date(booking.searchData.pickupDate).toLocaleDateString() : '8/12/24'}</p>
                 <p className="text-gray-700 flex items-center"><Calendar className="w-4 h-4 mr-2 text-orange-500" /><span className="font-semibold">Dropoff Date:</span> {booking.searchData?.dropoffDate ? new Date(booking.searchData.dropoffDate).toLocaleDateString() : '10/12/24'}</p>
-                <p className="text-gray-700 flex items-center"><Clock className="w-4 h-4 mr-2 text-orange-500" /><span className="font-semibold">Date:</span> {new Date(booking.date).toLocaleDateString()}</p>
+                {/* <p className="text-gray-700 flex items-center"><Clock className="w-4 h-4 mr-2 text-orange-500" /><span className="font-semibold">Date:</span> {new Date(booking.date).toLocaleDateString()}</p>*/}
                 {/* <p className="text-gray-700 flex items-center"><CheckCircle2 className="w-4 h-4 mr-2 text-orange-500" /><span className="font-semibold">Availability:</span> {booking.car?.available ? 'Available' : 'Not Available'}</p> */}
-                <p className="text-gray-700 flex items-center"><CheckCircle2 className="w-4 h-4 mr-2 text-orange-500" /><span className="font-semibold">Payment Status:</span> Paid</p>
+                {/* <p className="text-gray-700 flex items-center"><CheckCircle2 className="w-4 h-4 mr-2 text-orange-500" /><span className="font-semibold">Payment Status:</span> Paid</p> */}
 
-                <p className="text-gray-700 flex items-center"><Calendar className="w-4 h-4 mr-2 text-orange-500" /><span className="font-semibold">availabilityEndDate:</span> {booking.availabilityEndDate ? new Date(booking.availabilityEndDate).toLocaleDateString() : 'Not Found'}</p>
+               {/* <p className="text-gray-700 flex items-center"><Calendar className="w-4 h-4 mr-2 text-orange-500" /><span className="font-semibold">availabilityEndDate:</span> {booking.availabilityEndDate ? new Date(booking.availabilityEndDate).toLocaleDateString() : 'Not Found'}</p>*/}
                 <p className="text-gray-700 flex items-center"><Clock className="w-4 h-4 mr-2 text-orange-500" /><span className="font-semibold">Created At:</span> {new Date(booking.date).toLocaleDateString()}</p>
                 </div>
               {/* Add a button to track location */}
