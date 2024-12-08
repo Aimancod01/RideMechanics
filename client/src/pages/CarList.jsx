@@ -20,11 +20,6 @@ import {
   FaSnowflake,
 } from "react-icons/fa";
 
-
-
-
-
-
 const CarList = () => {
   const { setFormData } = useContext(FormDataContext);
   const [cars, setCars] = useState([]);
@@ -44,7 +39,9 @@ const CarList = () => {
   useEffect(() => {
     const fetchCars = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/cars");
+        const response = await axios.get("http://localhost:5000/api/cars", {
+          params: { available: true },
+        });
         setCars(response.data);
       } catch (error) {
         console.error("Error fetching cars:", error);
@@ -70,11 +67,7 @@ const CarList = () => {
     setSelectedCar(null);
     setModalIsOpen(false);
   };
-  const handleAddToCart = (car) => {
-    addToCart(car);
-    closeModal();
-    navigate("/carCart");
-  };
+ 
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
   };
@@ -336,8 +329,10 @@ const CarList = () => {
                     <span className=" font-bold text-xl">
                       Rs {car.price}/{car.days} day(s)
                     </span>
-                    <button onClick={() => openModal(car)} className="bg-orange-500 text-white font-semibold py-2 px-4 rounded hover:bg-orange-600">
-                      Book me
+                    <button onClick={() => openModal(car)} className={`btn ${car.availabilityEndDate && new Date(car.availabilityEndDate) > new Date() ? "btn-disabled" : "btn-primary"}w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 `}  disabled={car.availabilityEndDate && new Date(car.availabilityEndDate) > new Date()}>
+                    {car.availabilityEndDate && new Date(car.availabilityEndDate) > new Date()
+    ? "Unavailable"
+    : "Book Now"}
                     </button>
                   </div>
                 </div>

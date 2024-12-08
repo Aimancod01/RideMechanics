@@ -14,7 +14,7 @@ import mongoose from "mongoose";
 import bodyParser from 'body-parser';
 import cookieParser from "cookie-parser";
 import multer from 'multer';
-import { createServer } from 'http';
+import { createServer } from 'http'; import cron from "node-cron";
 import { Server } from 'socket.io';// var server = app.listen(8810);import io from ('socket.io').listen(server);process.env.PORT ||
 //const port =  5000;
 //app.listen(port, () => {
@@ -125,7 +125,7 @@ const carSchema = new mongoose.Schema({
   category: { type: String, required: true },
   price: { type: Number, required: true },
   days: { type: Number, required: true },
-
+  availabilityEndDate: Date,
   clean: { type: Boolean, required: true },
   latitude: { type: Number, required: true },
   longitude: { type: Number, required: true },
@@ -308,11 +308,11 @@ const carStorage = multer.diskStorage({
     const ext = path.extname(file.originalname);
     cb(null, `${Date.now()}${ext}`);
   }
-});const uploadCar = multer({ storage: carStorage });
+}); const uploadCar = multer({ storage: carStorage });
 app.post('/api/cars/upload', uploadCar.single('image'),
   async (req, res) => {
     try {
-      const { carName, carModel, doors, seats, transmission, ac, category, price, days,  clean, latitude, longitude, carNumber, city } = req.body;
+      const { carName, carModel, doors, seats, transmission, ac, category, price, days, clean, latitude, longitude, carNumber, city } = req.body;
       const image = req.file ? req.file.path : null; // File path from multer
       // Validate presence of required fields
       if (!carName || !carModel || !doors || !seats || !transmission || !category || !price || !days || !latitude || !longitude || !carNumber || !city) {
@@ -329,7 +329,7 @@ app.post('/api/cars/upload', uploadCar.single('image'),
         category,
         price,
         days,
-      
+
         clean,
         latitude,
         longitude,
@@ -362,14 +362,47 @@ app.post('/api/update-location', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-app.get('/api/cars', async (req, res) => {
+// app.get('/api/cars', async (req, res) => {
+//   try {
+//     const cars = await Car.find();
+//     res.status(200).send(cars);
+//   } catch (error) {
+//     res.status(500).send(error);
+//   }
+// });
+app.get("/api/cars", async (req, res) => {
   try {
-    const cars = await Car.find();
-    res.status(200).send(cars);
+    const { available } = req.query;
+
+    // Parse the 'available' query parameter as a boolean
+    const isAvailable = available === "true"; // "true" or "false" string, convert to boolean
+
+    // Query the Car model to get cars that match the availability status
+    const cars = await Car.find({
+      // Assuming there's a field `availabilityEndDate` that tracks availability
+      // Filter cars where the availabilityEndDate is in the future (available)
+      $or: [
+        { availabilityEndDate: { $gte: new Date() } }, // Cars with availabilityEndDate in the future
+        { availabilityEndDate: { $exists: false } },  // Or cars without an availabilityEndDate (indicating availability)
+      ],
+    });
+
+    // If 'available' is true, filter the cars accordingly
+    if (isAvailable) {
+      // Optionally, you can add further filtering logic to check availability status
+      // based on your exact requirements (e.g., if cars are truly "available").
+      return res.status(200).json(cars); // Send the available cars
+    }
+
+    // If no 'available' query, return all cars (optional)
+    return res.status(200).json(cars);
+
   } catch (error) {
-    res.status(500).send(error);
+    console.error("Error fetching cars:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
 app.delete('/api/cars/:id', async (req, res) => {
   try {
     const car = await Car.findByIdAndDelete(req.params.id);
@@ -435,7 +468,9 @@ const customerSchema = new mongoose.Schema({
   fullName: { type: String, required: true },
   cnic: { type: String, required: true },
   email: { type: String, required: true },
-  contactNumber: { type: String, required: true }, address: { type: String, required: true }, carId: { type: mongoose.Schema.Types.ObjectId, ref: 'Car', required: true }
+  contactNumber: { type: String, required: true },
+  address: { type: String, required: true },
+  carId: { type: mongoose.Schema.Types.ObjectId, ref: 'Car', required: true }
 });
 
 const Customer = mongoose.model('Customer', customerSchema);
@@ -723,7 +758,11 @@ app.post('/api/bookings', async (req, res) => {
   try {
     console.log('customer')
     const { car, customer, paymentId } = req.body;
+    const carId = await Car.findById(car);
+    if (!carId) return res.status(404).json({ error: "Car not found" });
 
+    // Use the 'days' value from the Car document
+    const days = car.days;
     console.log(customer)
     const newBooking = new Booking({
       car,
@@ -731,8 +770,15 @@ app.post('/api/bookings', async (req, res) => {
       paymentId,
       date: new Date(),
     });
+    // Calculate the availability end date
+    const availabilityEndDate = new Date();
+    availabilityEndDate.setDate(availabilityEndDate.getDate() + days);
+
+    // Update the car's availability end date
+    carId.availabilityEndDate = availabilityEndDate;
+    await carId.save();
     await newBooking.save();
-    res.status(200).json({ success: true });
+    res.status(200).json({ success: true, newBooking });
   } catch (error) {
     console.error('Error saving booking:', error);
     res.status(500).json({ success: false });
@@ -1103,10 +1149,10 @@ app.put('/api/packages/:id', upload.single('picture'), async (req, res) => {
       description: req.body.description,
       departureDate: req.body.departureDate,
       departureTime: req.body.departureTime,
-      arrivalDate: req.body. arrivalDate,
-      arrivalTime: req.body. arrivalTime,
+      arrivalDate: req.body.arrivalDate,
+      arrivalTime: req.body.arrivalTime,
       location: req.body.location,
-      
+
     };
 
     // Handle picture upload
@@ -1139,7 +1185,7 @@ app.delete('/api/packages/:id', async (req, res) => {
       return res.status(404).json({ error: 'Package not found' });
     }
 
-  
+
 
     res.status(200).json({ message: 'Package deleted successfully' });
   } catch (error) {
@@ -1211,7 +1257,7 @@ app.get('/api/tourCustomer/:id', async (req, res) => {
     const tourCustomer = req.params.id;
     const tourCustomerData = await TourCustomer.findById(tourCustomer);
 
-    if (!tourCustomerData ) {
+    if (!tourCustomerData) {
       return res.status(404).json({ error: 'tourCustomerData not found' });
     }
 
@@ -1229,7 +1275,7 @@ app.post("/api/tour-package-payment", async (req, res) => {
       amount, // Amount in cents
       currency: "pkr",
       payment_method_types: ["card"],
-      receipt_email: customerEmail,  description: `Payment for ${customerName}`,
+      receipt_email: customerEmail, description: `Payment for ${customerName}`,
     });
     const transporter = nodemailer.createTransport({
       service: 'Gmail', host: 'smtp.gmail.email', port: 587,
@@ -1280,23 +1326,24 @@ app.post("/api/tour-package-payment", async (req, res) => {
 
 app.delete("/api/tour-payments/:id", async (req, res) => {
   try {
-      const { id } = req.params;
-      const payment = await TourPayment.findByIdAndDelete(id);
-      if (!payment) return res.status(404).json({ error: 'Payment not found' });
-      res.status(200).json({ message: 'Payment deleted successfully' });
+    const { id } = req.params;
+    const payment = await TourPayment.findByIdAndDelete(id);
+    if (!payment) return res.status(404).json({ error: 'Payment not found' });
+    res.status(200).json({ message: 'Payment deleted successfully' });
   } catch (error) {
-      res.status(500).json({ error: 'Error deleting payment' });
-    }})
+    res.status(500).json({ error: 'Error deleting payment' });
+  }
+})
 app.get("/api/payments/:id", async (req, res) => {
-    try {
-        const payment = await TourPayment.findById(req.params.id).populate('customerId packageId');
-        if (!payment) {
-            return res.status(404).json({ message: "Payment not found" });
-        }
-        res.json(payment);
-    } catch (error) {
-        res.status(500).json({ message: "Error fetching payment data", error: error.message });
+  try {
+    const payment = await TourPayment.findById(req.params.id).populate('customerId packageId');
+    if (!payment) {
+      return res.status(404).json({ message: "Payment not found" });
     }
+    res.json(payment);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching payment data", error: error.message });
+  }
 });
 app.get("/api/tour-payments", async (req, res) => {
   try {
@@ -1304,8 +1351,24 @@ app.get("/api/tour-payments", async (req, res) => {
     res.status(200).json(payments);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Error retrieving payments' });}
-  });
+    res.status(500).json({ message: 'Error retrieving payments' });
+  }
+});
+
+
+cron.schedule("0 0 * * *", async () => {
+  try {
+    const now = new Date();
+    const cars = await Car.find({ availabilityEndDate: { $lte: now } });
+    for (const car of cars) {
+      car.availabilityEndDate = null; // Reset availability
+      await car.save();
+    }
+    console.log("Updated car availability");
+  } catch (error) {
+    console.error("Error updating car availability:", error);
+  }
+});
 try {
   await mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,

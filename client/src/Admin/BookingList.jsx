@@ -70,10 +70,10 @@ const BookingList = () => {
                 <p className="text-gray-700 flex items-center"><Calendar className="w-4 h-4 mr-2 text-orange-500" /><span className="font-semibold">Pickup Date:</span> {booking.searchData?.pickupDate ? new Date(booking.searchData.pickupDate).toLocaleDateString() : '8/12/24'}</p>
                 <p className="text-gray-700 flex items-center"><Calendar className="w-4 h-4 mr-2 text-orange-500" /><span className="font-semibold">Dropoff Date:</span> {booking.searchData?.dropoffDate ? new Date(booking.searchData.dropoffDate).toLocaleDateString() : '10/12/24'}</p>
                 {/* <p className="text-gray-700 flex items-center"><Clock className="w-4 h-4 mr-2 text-orange-500" /><span className="font-semibold">Date:</span> {new Date(booking.date).toLocaleDateString()}</p>*/}
-                {/* <p className="text-gray-700 flex items-center"><CheckCircle2 className="w-4 h-4 mr-2 text-orange-500" /><span className="font-semibold">Availability:</span> {booking.car?.available ? 'Available' : 'Not Available'}</p> */}
+                {/* <p className="text-gray-700 flex items-center"><CheckCircle2 className="w-4 h-4 mr-2 text-orange-500" /><span className="font-semibold">Availability:</span> {booking.car?.available ? 'Available' : 'Not Available'}</p> ? new Date(booking.availabilityEndDate).toLocaleDateString()*/}
                 {/* <p className="text-gray-700 flex items-center"><CheckCircle2 className="w-4 h-4 mr-2 text-orange-500" /><span className="font-semibold">Payment Status:</span> Paid</p> */}
 
-               {/* <p className="text-gray-700 flex items-center"><Calendar className="w-4 h-4 mr-2 text-orange-500" /><span className="font-semibold">availabilityEndDate:</span> {booking.availabilityEndDate ? new Date(booking.availabilityEndDate).toLocaleDateString() : 'Not Found'}</p>*/}
+               <p className="text-gray-700 flex items-center"><Calendar className="w-4 h-4 mr-2 text-orange-500" /><span className="font-semibold">availabilityEndDate:</span> {booking.car.availabilityEndDate ? new Date(booking.car.availabilityEndDate).toLocaleDateString() : 'Not Found'}</p>
                 <p className="text-gray-700 flex items-center"><Clock className="w-4 h-4 mr-2 text-orange-500" /><span className="font-semibold">Created At:</span> {new Date(booking.date).toLocaleDateString()}</p>
                 </div>
               {/* Add a button to track location */}
