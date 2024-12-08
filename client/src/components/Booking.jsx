@@ -97,6 +97,7 @@ const Booking = () => {
               <h2 className="text-2xl font-bold text-orange-600 mb-2">Car Rental</h2>
               <h2 className="text-xl font-semibold mb-2">{selectedCar.carName} - {selectedCar.carModel}</h2>
               <p className="text-gray-600 mb-4">{selectedCar.city}</p>
+              <p className="text-gray-600 mb-4">{selectedCar.carNumber}</p>
               <div className="border-t pt-4">
                 <h4 className="font-semibold text-lg mb-2">Rental Duration</h4>
                 <p className="text-gray-700">Day(s): {selectedCar.days}</p>

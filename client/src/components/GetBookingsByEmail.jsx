@@ -49,6 +49,18 @@ const GetBookingsByEmail = () => {
     </div>
     );
   }
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/bookings/${id}`)
+     
+        setBookings(bookings.filter((booking) => booking._id !== id));
+        toast.success('Booking deleted successfully');
+      }
+      catch(error) {
+        console.error("There was an error deleting the booking!", error);
+        toast.error('Failed to delete Booking');
+      };
+    }
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
@@ -112,8 +124,11 @@ const GetBookingsByEmail = () => {
                   className="p-4 bg-gray-50 border rounded-lg shadow-sm space-y-2"
                 >
                   <h3 className="text-lg font-semibold text-gray-800">
-                    Customer: {booking.customer.fullName}
+                    Customer Info: 
                   </h3>
+                  <p className="text-gray-600">
+                    <strong>Name:</strong> {booking.customer.fullName}
+                  </p>
                   <p className="text-gray-600">
                     <strong>CNIC:</strong> {booking.customer.cnic}
                   </p>
@@ -123,11 +138,17 @@ const GetBookingsByEmail = () => {
                   <p className="text-gray-600">
                     <strong>Contact:</strong> {booking.customer.contactNumber}
                   </p>
+                  <h3 className="text-lg font-semibold text-gray-800">
+                    Car Info: 
+                  </h3>
                   {booking.car ? (
                     <>
                       <p className="text-gray-600">
-                        <strong>Car:</strong> {booking.car.carName} -{' '}
+                        <strong>Car Model:</strong> {booking.car.carName} -{' '}
                         {booking.car.carModel}
+                      </p>
+                      <p className="text-gray-600">
+                        <strong>Car Number:</strong>{booking.car.carNumber}
                       </p>
                       <p className="text-gray-600">
                         <strong>Total Price:</strong> Rs {booking.car.price}
@@ -138,16 +159,24 @@ const GetBookingsByEmail = () => {
                       <strong>Car details not available</strong>
                     </p>
                   )}
-                  <p className="text-gray-600">
-                    <strong>Date:</strong>{' '}
+                  <p className="text-gray-800">
+                    <strong>Created At:</strong>{' '}
                     {new Date(booking.date).toLocaleDateString()}
                   </p>
+                  <button
+                onClick={() => handleDelete(booking._id)}
+                className="mt-4  bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition-all duration-300"
+              >
+                Delete
+              </button>
                 </div>
               ))
             ) : (
               <p className="text-gray-500">No bookings found for this customer.</p>
             )}
+            
           </div>
+
           <button
             onClick={closeModal}
             className="w-full bg-orange-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-orange-600 transition-all"

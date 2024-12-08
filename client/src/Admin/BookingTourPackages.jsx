@@ -70,7 +70,7 @@ const BookingTourPackages = () => {
                       <p>Package: {payment.packageId ? payment.packageId.packageName : 'N/A'}</p>
                       <p>Departure: {payment.packageId ? `${new Date(payment.packageId.departureDate).toLocaleDateString()} ${payment.packageId.departureTime}` : 'N/A'}</p>
                       <p>Arrival: {payment.packageId ? `${new Date(payment.packageId.arrivalDate).toLocaleDateString()} ${payment.packageId.arrivalTime}` : 'N/A'}</p>
-                      <p>Price: ${payment.packageId ? payment.packageId.price : 'N/A'}</p>
+                      <p>Price: Rs{payment.packageId ? payment.packageId.price : 'N/A'}</p>
                     </div>
 
                     <p className="font-semibold text-gray-700">Quantity: {payment.quantity}</p>

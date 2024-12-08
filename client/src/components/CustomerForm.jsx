@@ -146,6 +146,7 @@ const CustomerForm = ({ carId }) => {
                         <h2 className="text-lg sm:text-xl font-semibold">{car.carName} - {car.carModel}</h2>
                     </div>
                     <p className="text-gray-600 mb-4">{car.city}</p>
+                    <p className="text-gray-600 mb-4">{car.carNumber}</p>
                     <div className="border-t pt-4 mb-4">
                         <h4 className="font-semibold text-base sm:text-lg mb-2">Rental Duration</h4>
                         <p className="text-gray-700">Day(s): {car.days}</p>
