@@ -548,7 +548,7 @@ app.post('/create-checkout-session', async (req, res) => {
       service: 'Gmail', host: 'smtp.gmail.email', port: 587,
       auth: {
         user: 'umar1466088@gmail.com',
-        pass: 'vawj nujs lbfr auda',
+        pass: 'gwng otle pytu fzak',
       },
     });
 
@@ -1235,7 +1235,7 @@ app.post("/api/tour-package-payment", async (req, res) => {
       service: 'Gmail', host: 'smtp.gmail.email', port: 587,
       auth: {
         user: "umar1466088@gmail.com",
-        pass: "hmha agbk ntmq ogty",
+        pass: "gwng otle pytu fzak",
       },
     });
 
