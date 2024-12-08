@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import 'leaflet/dist/leaflet.css';
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
-
+import { toast } from "react-toastify";import { Link, useNavigate } from "react-router-dom";
 const CarForm = () => {
   const [formData, setFormData] = useState({
     carName: '',
@@ -12,7 +12,7 @@ const CarForm = () => {
     transmission: 'Manual',
     ac: false,
     category: '',
-   
+
     clean: false,
     image: null,
     price: '',
@@ -46,7 +46,7 @@ const CarForm = () => {
       [name]: type === 'checkbox' ? checked : value
     });
   };
-
+  const navigate = useNavigate();
   const handleSliderChange = (e) => {
     const { value } = e.target;
     setFormData({
@@ -57,11 +57,11 @@ const CarForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-     const formDataToSend = new FormData();
+    const formDataToSend = new FormData();
     for (const key in formData) {
       if (key === 'image' && formData[key]) {
         formDataToSend.append('image', formData[key]);
-      }  else {
+      } else {
         formDataToSend.append(key, formData[key]);
       }
     }
@@ -71,7 +71,7 @@ const CarForm = () => {
           'Content-Type': 'multipart/form-data',
         }
       },);
-      console.log('Car added successfully:', response.data);
+      console.log('Car added successfully:', response.data);toast.success('Car added successfully')
       setFormData({
         carName: '',
         carModel: '',
@@ -80,7 +80,7 @@ const CarForm = () => {
         transmission: 'Manual',
         ac: false,
         category: '',
-       
+
         clean: false,
         image: null,
         price: '',
@@ -89,9 +89,9 @@ const CarForm = () => {
         longitude: '',
         carNumber: '',
         city: '',
-      });
+      });navigate('/cars')
     } catch (error) {
-      console.error('Failed to add car:', error);
+      console.error('Failed to add car:', error);toast.error('Failed to Car Added')
     }
   };
 
@@ -102,7 +102,7 @@ const CarForm = () => {
     });
   };
 
-  return (
+  return (<div className="container mx-auto px-4 py-8">
     <div className="max-w-4xl mx-auto p-4 sm:p-6 md:p-8 bg-white shadow-lg rounded-lg mb-12">
       <h2 className="text-3xl font-bold mb-6 text-orange-600 text-center">Add New Car</h2>
 
@@ -115,7 +115,7 @@ const CarForm = () => {
             id="carName"
             name="carName"
             value={formData.carName}
-            onChange={handleChange}
+            onChange={handleChange} placeholder="Enter Car Name"
             className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-orange-500 focus:ring-orange-500"
             required
           />
@@ -129,7 +129,7 @@ const CarForm = () => {
             id="carModel"
             name="carModel"
             value={formData.carModel}
-            onChange={handleChange}
+            onChange={handleChange} placeholder="Enter Car Model"
             className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-orange-500 focus:ring-orange-500"
             required
           />
@@ -158,7 +158,7 @@ const CarForm = () => {
             id="doors"
             name="doors"
             value={formData.doors}
-            onChange={handleChange}
+            onChange={handleChange} placeholder="Enter Car Doors"
             className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-orange-500 focus:ring-orange-500"
             required
           />
@@ -172,7 +172,7 @@ const CarForm = () => {
             id="seats"
             name="seats"
             value={formData.seats}
-            onChange={handleChange}
+            onChange={handleChange} placeholder="Enter Seats"
             className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-orange-500 focus:ring-orange-500"
             required
           />
@@ -185,7 +185,7 @@ const CarForm = () => {
             id="transmission"
             name="transmission"
             value={formData.transmission}
-            onChange={handleChange}
+            onChange={handleChange} 
             className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-orange-500 focus:ring-orange-500"
           >
             <option value="Manual">Manual</option>
@@ -201,7 +201,7 @@ const CarForm = () => {
             id="ac"
             name="ac"
             checked={formData.ac}
-            onChange={handleChange}
+            onChange={handleChange} 
             className="h-4 w-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500"
           />
         </div>
@@ -215,7 +215,7 @@ const CarForm = () => {
               name="category"
               value="Economy"
               checked={formData.category === 'Economy'}
-              onChange={handleChange}
+              onChange={handleChange} 
               className="form-radio h-4 w-4 text-orange-600 border-gray-300 focus:ring-orange-500"
               required
             />
@@ -261,7 +261,7 @@ const CarForm = () => {
               id="price"
               name="price"
               value={formData.price}
-              onChange={handleChange}
+              onChange={handleChange} placeholder="Enter Rented Price"
               className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-orange-500 focus:ring-orange-500"
               required
             />
@@ -275,7 +275,7 @@ const CarForm = () => {
               id="days"
               name="days"
               value={formData.days}
-              onChange={handleChange}
+              onChange={handleChange} placeholder="Enter Rented Days"
               className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-orange-500 focus:ring-orange-500"
               required
             />
@@ -289,8 +289,8 @@ const CarForm = () => {
               step="any"
               id="latitude"
               name="latitude"
-              value={formData.latitude}
-              onChange={handleChange}
+              value={formData.latitude} disabled
+              onChange={handleChange} placeholder="Enter Car Location Latitude"
               className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-orange-500 focus:ring-orange-500 cursor-not-allowed"
               required
             />
@@ -304,8 +304,8 @@ const CarForm = () => {
               step="any"
               id="longitude"
               name="longitude"
-              value={formData.longitude}
-              onChange={handleChange}
+              value={formData.longitude} disabled
+              onChange={handleChange} placeholder="Enter Car Location Longitude"
               className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-orange-500 focus:ring-orange-500 cursor-not-allowed"
               required
             />
@@ -319,19 +319,19 @@ const CarForm = () => {
             id="carNumber"
             name="carNumber"
             value={formData.carNumber}
-            onChange={handleChange}
+            onChange={handleChange} placeholder="Enter Car Number"
             className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-orange-500 focus:ring-orange-500"
             required
           />
         </div>
 
-       
 
-       
+
+
 
         {/* Clean Interior/Exterior */}
         <div className="flex items-center space-x-2">
-          <label className="block text-gray-700 text-sm font-bold ">Clean Interior/Exterior</label>
+          <label className="block text-gray-700 text-sm  font-medium  ">Clean Interior/Exterior</label>
           <input
             type="checkbox"
             name="clean"
@@ -340,18 +340,6 @@ const CarForm = () => {
             className="h-4 w-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500"
           />
         </div>
-
-        {/* Upload Image */}
-        <div className="w-full">
-          <label className="block text-sm font-medium text-gray-700">Upload Image</label>
-          <input
-            type="file"
-            name="image"
-            onChange={handleFileChange}
-            className="mt-1 block w-full text-sm text-gray-500 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none focus:border-orange-500 focus:ring-orange-500"
-          />
-        </div>
-
         {/* City */}
         <div className="w-full">
           <label className="block text-sm font-medium text-gray-700">City</label>
@@ -359,11 +347,23 @@ const CarForm = () => {
             type="text"
             name="city"
             value={formData.city}
-            onChange={handleChange}
+            onChange={handleChange} placeholder="Enter City"
             className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-orange-500 focus:ring-orange-500"
             required
           />
         </div>
+        {/* Upload Image */}
+        <div className="w-full">
+          <label className="block text-sm font-medium text-gray-700">Upload Image</label>
+          <input
+            type="file"
+            name="image"
+            onChange={handleFileChange} 
+            className="mt-1 block w-full text-sm text-gray-500 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none focus:border-orange-500 focus:ring-orange-500"
+          />
+        </div>
+
+
 
         {/* Submit Button */}
         <button
@@ -373,7 +373,7 @@ const CarForm = () => {
           Add Car
         </button>
       </form>
-    </div>
+    </div></div>
   );
 };
 

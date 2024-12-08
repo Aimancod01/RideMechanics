@@ -1,9 +1,9 @@
 // src/components/CarList.js
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from 'axios'; import { toast } from "react-toastify";
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { PulseLoader } from 'react-spinners';
-import {  FaEllipsisH, FaDoorOpen, FaCouch, FaBolt, FaCar, FaSnowflake, FaEdit, FaTrash, FaPlus } from 'react-icons/fa';
+import { FaDoorOpen, FaCouch, FaBolt, FaCar, FaSnowflake, FaPlus } from 'react-icons/fa';
 const CarListDashboard = () => {
   const [cars, setCars] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -36,15 +36,15 @@ const CarListDashboard = () => {
   };
 
   const handleDelete = async (carId) => {
-    if (window.confirm('Are you sure you want to delete this car?')) {
-      try {
-        await axios.delete(`http://localhost:5000/api/cars/${carId}`);
-        setCars(cars.filter(car => car._id !== carId));// Remove the car from the state or refetch the car list after deletion
-        setNotification({ type: 'success', message: 'Car deleted successfully!' });
 
-      } catch (error) {
-        console.error('Failed to delete car:', error.response ? error.response.data : error.message); setNotification({ type: 'error', message: 'Failed to delete car!' });
-      }
+    try {
+      await axios.delete(`http://localhost:5000/api/cars/${carId}`);
+      setCars(cars.filter(car => car._id !== carId));// Remove the car from the state or refetch the car list after deletion
+      setNotification({ type: 'success', message: 'Car deleted successfully!' });
+      toast.success('Car Deleted Successfully')
+    } catch (error) {
+      console.error('Failed to delete car:', error.response ? error.response.data : error.message); setNotification({ type: 'error', message: 'Failed to delete car!' });
+      toast.error('Car Deleted Failed')
 
     };
   }; useEffect(() => {
@@ -55,25 +55,20 @@ const CarListDashboard = () => {
   }, [notification]);
 
   const handleViewBookings = () => {
-   
+
     navigate('/addCar');
   };
   return (
-    <div className="max-w-7xl mx-auto p-4">  <div className="flex justify-between items-center mb-6">
-      <h2 className="text-3xl font-bold text-orange-500 mb-6">Car List</h2>
-      <button
-        onClick={handleViewBookings}
-        className="bg-orange-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-orange-600 flex items-center"
-      >
-        <FaPlus className="mr-2" /> Add Car
-      </button> </div>
-      {notification && (
-        <div
-          className={`p-4 mb-4 rounded-md text-white ${notification.type === 'success' ? 'bg-green-500' : 'bg-red-500'}`}
+    <div className="max-w-7xl mx-auto p-4">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-3xl font-bold text-orange-500 mb-6">Car List</h2>
+        <button
+          onClick={handleViewBookings}
+          className="bg-orange-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-orange-600 flex items-center"
         >
-          {notification.message}
-        </div>
-      )}
+          <FaPlus className="mr-2" /> Add Car
+        </button> </div>
+
       {loading ? (
         <div className="flex justify-center items-center h-60">
           <PulseLoader color="#F97316" size={15} />
@@ -84,62 +79,51 @@ const CarListDashboard = () => {
             <div
               key={car._id}
               className="bg-white shadow-lg rounded-lg overflow-hidden relative group transition transform hover:scale-105 hover:shadow-2xl"
-            >
+            ><div className="flex justify-between p-4 bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 text-white">
+                <button
+                  className="bg-transparent border-2 border-white rounded-full p-2 hover:bg-orange-700"
+                  onClick={() => handleEdit(car._id)}
+                >
+                  Edit
+                </button>
+                <button
+                  className="bg-transparent border-2 border-white text-white py-1 px-3 rounded-lg hover:bg-red-600"
+                  onClick={() => handleDelete(car._id)}
+                >
+                  Delete
+                </button>
+              </div>
               <img src={`http://localhost:5000/${car.image}`} alt={car.carName} className="w-full h-48 object-cover" />
               <div className="p-4">
-                <h3 className="text-2xl font-bold text-orange-600">{car.carName}</h3>
+                <h3 className="text-xl font-semibold text-orange-600">{car.carName}</h3>
                 <p className="text-gray-600">{car.carModel}</p>
-                <div className="flex items-center mt-2 space-x-3">
-                  <span className="text-orange-500 font-semibold flex items-center">
+                <p className="text-gray-600">{car.carNumber}</p>
+                <div className="flex flex-wrap items-center mt-2 gap-3">
+                  <span className="bg-orange-100 text-orange-500 px-2 py-1 rounded-lg text-sm font-semibold">
                     <FaDoorOpen className="mr-1" /> {car.doors} Doors
                   </span>
-                  <span className="text-orange-500 font-semibold flex items-center">
+                  <span className="bg-orange-100 text-orange-500 px-2 py-1 rounded-lg text-sm font-semibold">
                     <FaCouch className="mr-1" /> {car.seats} Seats
                   </span>
-                  <span className="text-orange-500 font-semibold flex items-center">
+                  <span className="bg-orange-100 text-orange-500 px-2 py-1 rounded-lg text-sm font-semibold">
                     {car.transmission === 'Manual' ? <FaCar /> : <FaBolt />} {car.transmission}
                   </span>
-                  <span className="text-orange-500 font-semibold flex items-center">
+                  <span className="bg-orange-100 text-orange-500 px-2 py-1 rounded-lg text-sm font-semibold">
                     <FaSnowflake className="mr-1" /> {car.ac ? 'AC' : 'Non-AC'}
                   </span>
                 </div>
 
                 <div className="mt-4 space-x-2">
-                  <span className="bg-blue-100 text-blue-500 text-xs font-semibold  px-2.5 py-0.5 rounded">{car.category}</span>
+                  <span className="bg-purple-100 text-purple-500 text-xs font-semibold px-2 py-1 rounded-lg">{car.category}</span>
 
-                  <span className="bg-purple-100 text-purple-500 text-xs font-semibold px-2.5 py-0.5 rounded">Clean Interior/Exterior</span>
+                  <span className="bg-green-100 text-green-500 text-xs font-semibold px-2 py-1 rounded-lg ml-2">Clean Interior/Exterior</span>
                 </div>
                 <div className="flex justify-between items-center mt-4">
                   <span className="text-gray-900 font-bold text-xl"> <span className="text-orange-600">Rs {car.price}</span> / {car.days} day(s) </span>
-                  <button className="bg-orange-500 text-white font-semibold py-2 px-4 rounded hover:bg-orange-600">
-                    Book me
-                  </button>
+
                 </div>
               </div>
-              <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                <FaEllipsisH
-                  className="h-6 w-6 text-gray-600 cursor-pointer hover:text-orange-500"
-                  onClick={() => setSelectedCar(selectedCar === car._id ? null : car._id)}
-                />
-                {selectedCar === car._id && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10">
-                    <div className="py-1">
-                      <button
-                        onClick={() => handleEdit(car._id)}
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-orange-100 hover:text-orange-500 w-full text-left flex items-center"
-                      >
-                        <FaEdit className="mr-2" /> Edit
-                      </button>
-                      <button
-                        onClick={() => handleDelete(car._id)}
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-red-100 hover:text-red-500 w-full text-left flex items-center"
-                      >
-                        <FaTrash className="mr-2" />  Delete
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
+
             </div>
           ))}
         </div>)}
