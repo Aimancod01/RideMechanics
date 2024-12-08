@@ -26,12 +26,12 @@ const Sidebar = () => {
           <span className="text-sm font-medium text-orange-700">Reports</span>
         </Link>
 
-        {/* Maintenance */}
+        {/* Maintenance 
         <Link to="/Maintenance" className="flex items-center bg-gradient-to-br from-orange-100 to-white rounded-lg shadow-md p-4 transition transform hover:scale-105 hover:shadow-lg">
           <Wrench size={36} className="text-orange-600 mr-4" />
           <span className="text-sm font-medium text-orange-700">Maintenance</span>
         </Link>
-
+*/}
         {/* Tour Packages */}
         <Link to="/packageList" className="flex items-center bg-gradient-to-br from-orange-100 to-white rounded-lg shadow-md p-4 transition transform hover:scale-105 hover:shadow-lg">
           <Package size={36} className="text-orange-600 mr-4" />

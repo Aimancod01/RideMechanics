@@ -1278,7 +1278,15 @@ app.post("/api/tour-package-payment", async (req, res) => {
 });
 // Assuming you have a "TourPayment" model in your MongoDB
 
-
+app.delete("/api/tour-payments/:id", async (req, res) => {
+  try {
+      const { id } = req.params;
+      const payment = await TourPayment.findByIdAndDelete(id);
+      if (!payment) return res.status(404).json({ error: 'Payment not found' });
+      res.status(200).json({ message: 'Payment deleted successfully' });
+  } catch (error) {
+      res.status(500).json({ error: 'Error deleting payment' });
+    }})
 app.get("/api/payments/:id", async (req, res) => {
     try {
         const payment = await TourPayment.findById(req.params.id).populate('customerId packageId');

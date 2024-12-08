@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { PulseLoader } from 'react-spinners';
-
+import {toast}  from 'react-toastify'
 const BookingTourPackages = () => {
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -21,17 +21,17 @@ const BookingTourPackages = () => {
 
   // Delete a payment by ID
   const handleDelete = (id) => {
-    if (window.confirm('Are you sure you want to delete this payment?')) {
+  
       axios.delete(`http://localhost:5000/api/tour-payments/${id}`)
         .then(() => {
           setPayments(payments.filter(payment => payment._id !== id));
-          alert('Payment deleted successfully');
+          toast.success('Payment deleted successfully');
         })
         .catch((error) => {
           console.error("There was an error deleting the payment!", error);
-          alert('Failed to delete payment');
+          toast.error('Failed to delete payment');
         });
-    }
+   
   };
 
   return (
