@@ -1,9 +1,9 @@
 // PaymentPage.js
-import React from 'react';
+import React,{ useContext} from 'react';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import CheckoutForm from './CheckoutForm';
-import { useLocation, useNavigate } from 'react-router-dom'; 
+import { useLocation, useNavigate } from 'react-router-dom'; import { FormDataContext } from './FormDataContext';
 const stripePromise = loadStripe('pk_test_51Oh1XhAQEV6haT2dXzi4DvGFvFIesr2qkUXy0K33uFqEe1mqwiz77oz6exboVbh8SLyXDC27ngzVs6un8EZwIvHJ00vTTS67Da');
 
 const PaymentPage = () => {
@@ -12,9 +12,27 @@ const PaymentPage = () => {
   if (!car || !formDataCustomer) {
     console.error('Car or customer data is missing');
     navigate('/');
-    return null;
-  }
-  return (
+    return null; 
+  }  
+  return (<> <div className=" px-4 py-8 flex items-center justify-center bg-gradient-to-br from-orange-100 to-white  sm:px-6 md:px-8 lg:px-12">
+  <div className="w-full max-w-4xl">
+    <div className="bg-white shadow-lg rounded-lg overflow-hidden">
+            <img src={`http://localhost:5000/${car.image}`} alt={car.carName} className="w-full h-48 object-cover" />
+            <div className="px-6 py-4">
+              <h2 className="text-2xl font-bold text-orange-600 mb-2">Car Rental</h2>
+              <h2 className="text-xl font-semibold mb-2">{car.carName} - {car.carModel}</h2>
+              <p className="text-gray-600 mb-4">{car.CarNumber}</p>
+              <p className="text-gray-600 mb-4">{car.city}</p>
+              <div className="border-t pt-4">
+                <h4 className="font-semibold text-lg mb-2">Rental Duration</h4>
+                <p className="text-gray-700">Day(s): {car.days}</p>
+              </div>
+              <div className="border-t mt-4 pt-4">
+                <h3 className="font-semibold text-lg mb-2">Total Price</h3>
+                <p className="text-3xl font-bold text-orange-600">Rs {car.price}</p>
+              </div>
+            </div> </div>
+          </div> </div>
     <Elements stripe={stripePromise}>
       <div className="min-h-screen bg-gradient-to-br from-orange-100 to-white p-4 sm:p-6 md:p-8 lg:p-12 xl:p-16">
         <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden transition-transform duration-300 ease-in-out hover:scale-105">
@@ -41,7 +59,7 @@ const PaymentPage = () => {
           </div>
         </div>
       </div>
-    </Elements>
+    </Elements></>
   );
 };
 
