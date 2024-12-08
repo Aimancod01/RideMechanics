@@ -1,13 +1,13 @@
 // src/components/CarList.js
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios'; import { toast } from "react-toastify";
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import {  useNavigate, useLocation } from 'react-router-dom';
 import { PulseLoader } from 'react-spinners';
 import { FaDoorOpen, FaCouch, FaBolt, FaCar, FaSnowflake, FaPlus } from 'react-icons/fa';
 const CarListDashboard = () => {
   const [cars, setCars] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedCar, setSelectedCar] = useState(null);
+  //const [selectedCar, setSelectedCar] = useState(null);
   const [notification, setNotification] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
@@ -29,8 +29,8 @@ const CarListDashboard = () => {
     fetchCars();
   }, [location.pathname]);// Refetch data when URL path changes
   const handleEdit = async (carId) => {
-    const response = await axios.get('http://localhost:5000/api/cars');
-    setCars(response.data);
+    //const response = await axios.get('http://localhost:5000/api/cars');
+   // setCars(response.data);
     // Handle edit functionalitycreate complete edit delete functionality in frontend backend
     navigate(`/edit-car/${carId}`); console.log('Edit car:', carId);
   };
@@ -46,7 +46,7 @@ const CarListDashboard = () => {
       console.error('Failed to delete car:', error.response ? error.response.data : error.message); setNotification({ type: 'error', message: 'Failed to delete car!' });
       toast.error('Car Deleted Failed')
 
-    };
+    }
   }; useEffect(() => {
     if (notification) {
       const timer = setTimeout(() => setNotification(null), 3000);

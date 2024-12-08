@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import axios from 'axios';
 import 'leaflet/dist/leaflet.css';
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
-import { toast } from "react-toastify";import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";import { useNavigate } from "react-router-dom";
 const CarForm = () => {
   const [formData, setFormData] = useState({
     carName: '',
@@ -47,13 +47,7 @@ const CarForm = () => {
     });
   };
   const navigate = useNavigate();
-  const handleSliderChange = (e) => {
-    const { value } = e.target;
-    setFormData({
-      ...formData,
-      priceRange: [0, parseInt(value, 10)]
-    });
-  };
+ 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -271,7 +265,7 @@ const CarForm = () => {
           <div className="w-full">
             <label htmlFor="days" className="block text-sm font-medium text-gray-700">Number of Days</label>
             <input
-              type="number"
+              type="text"
               id="days"
               name="days"
               value={formData.days}
