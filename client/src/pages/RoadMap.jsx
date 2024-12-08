@@ -34,7 +34,7 @@ const RecenterMap = ({ location }) => {
   const map = useMap();
   useEffect(() => {
     if (location) {
-      map.setView(location, 14); // Update map view to new location
+      map.setView(location, 13); // Update map view to new location
     }
   }, [location, map]);
   return null;
@@ -42,6 +42,18 @@ const RecenterMap = ({ location }) => {
 
 const RoadMap = () => {
   const [mechanics, setMechanics] = useState([]);
+  const [userLocation, setUserLocation] = useState([31.5204, 74.3587]); // Default to Lahore
+  const [selectedMechanic, setSelectedMechanic] = useState(null);
+  const [activeTab, setActiveTab] = useState("list"); // Manage tabs
+
+  const [userRequests, setUserRequests] = useState([]);
+  const [messages, setMessages] = useState({
+    conversation: [],
+    newMessage: "",
+  });
+
+  const userInfo = JSON.parse(localStorage.getItem("userinfo")); // Get user info from local storage
+  const { userType } = userInfo || {};
   async function fetchMechanics() {
     try {
       const response = await axios.get("http://localhost:5000/api/v1/getUsers");
@@ -54,18 +66,7 @@ const RoadMap = () => {
   useEffect(() => {
     fetchMechanics();
   }, []);
-  const [userLocation, setUserLocation] = useState([31.5204, 74.3587]); // Default to Lahore
-  const [selectedMechanic, setSelectedMechanic] = useState(null);
-  const [activeTab, setActiveTab] = useState("list"); // Manage tabs
-
-  const [userRequests, setUserRequests] = useState([]);
-  const [messages, setMessages] = useState({
-    conversation: [],
-    newMessage: "",
-  });
-
-  const userInfo = JSON.parse(localStorage.getItem("userinfo")); // Get user info from local storage
-  const { userType } = userInfo || {}; // Extract userType
+  // Extract userType
 
   const sendMessage = (e) => {
     e.preventDefault();

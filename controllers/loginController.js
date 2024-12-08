@@ -65,13 +65,28 @@ export const resetPassword = async (req, res) => {
 };
 
 export const register = async (req, res) => {
-  const isFirstAccount = (await User.countDocuments()) === 0;
-  req.body.role = isFirstAccount ? "admin" : "user";
-  const salt = await bcryptjs.genSalt(10);
-  const hashedPassword = await bcryptjs.hash(req.body.password, salt);
-  req.body.password = hashedPassword;
-  const user = await User.create(req.body);
-  res.send({ user });
+  try {
+    const isFirstAccount = (await User.countDocuments()) === 0;
+    req.body.role = isFirstAccount ? "admin" : "user";
+
+    // Hash the password
+    const salt = await bcryptjs.genSalt(10);
+    const hashedPassword = await bcryptjs.hash(req.body.password, salt);
+
+    // Save user details and image path
+    const user = new User({
+      ...req.body,
+      password: hashedPassword,
+      image: req.file ? req.file.path : null, // Save the image path if uploaded
+    });
+
+    await user.save();
+
+    res.status(201).json({ msg: "User registered successfully", user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: "Server Error. Please try again later." });
+  }
 };
 
 export const logout = async (req, res) => {

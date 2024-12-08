@@ -41,6 +41,7 @@ const UserSchema = new mongoose.Schema({
     type: Number,
     default: null, // Stores the longitude of the mechanic
   },
+  image: { type: String, default: null },
 });
 
 const User = mongoose.model("User", UserSchema);
