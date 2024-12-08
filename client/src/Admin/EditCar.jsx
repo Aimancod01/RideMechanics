@@ -14,7 +14,7 @@ const EditCar = () => {
     transmission: "Manual",
     ac: false,
     category: "",
-    theftProtection: false,
+   
     clean: false,
     image: null,
     price: "",
@@ -72,24 +72,24 @@ const EditCar = () => {
         }
       );
       console.log("Car Updated successfully:", response.data);
-      // setFormData({
-      //   carName: '',
-      //   carModel: '',
-      //   doors: '',
-      //   seats: '',
-      //   transmission: 'Manual',
-      //   ac: false,
-      //   category: '',
-      //   theftProtection: false,
-      //   clean: false,
-      //   image: null,
-      //   price: '',
-      //   days: '',
-      //   latitude: '',
-      //   longitude: '',
-      //   carNumber: '',
-      //   city: '',
-      // });
+      setFormData({
+        carName: '',
+        carModel: '',
+        doors: '',
+        seats: '',
+        transmission: 'Manual',
+        ac: false,
+        category: '',
+        
+        clean: false,
+        image: null,
+        price: '',
+        days: '',
+        latitude: '',
+        longitude: '',
+        carNumber: '',
+        city: '',
+      });
       toast.success("Car Updated Successfully");
       navigate("/cars");
     } catch (error) {
