@@ -82,11 +82,11 @@ const MapComponent = ({ carId }) => {//const { carId } = useParams();
   // return () => clearInterval(interval); // Clean up interval on component unmount
   // }, [carId]);
 
-  if (loading) return (
+  if (loading){ return (
     <div className="flex justify-center items-center h-screen">
       <PulseLoader color="#F97316" size={15} />
     </div>
-  );; if (error) return <p className="text-red-500">{error}</p>;
+  ) }; if (error) return <p className="text-red-500">{error}</p>;
 
   return (
     <div className="container mx-auto px-4 py-8">

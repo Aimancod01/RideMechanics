@@ -47,24 +47,32 @@ io.on('connection', (socket) => {
   });
 });
 app.post('/api/update-location/:carId', async (req, res) => {
-  try {
+  
     const { latitude, longitude } = req.body;
-
-    const car = await Car.findById(req.params.carId);
+    try {
+    const car = await Car.findByIdAndUpdate(req.params.carId,
+      { $set: { currentLocation: { lat: latitude, lng: longitude } } },
+      { new: true });
     if (!car) {
       return res.status(404).json({ error: 'Car not found' });
     }
-
+    io.emit('location-updated', {
+      carId: req.params.carId,
+      latitude,
+      longitude
+    });
     // Update the car's latitude and longitude
-    car.latitude = latitude;
-    car.longitude = longitude;
+    //car.latitude = latitude;
+   // car.longitude = longitude;
     
     // Optionally, you can also add the new location to locationHistory
-    car.locationHistory.push({ lat: latitude, lng: longitude, timestamp: new Date() });
+   // car.locationHistory.push({ lat: latitude, lng: longitude, timestamp: new Date() });
 
-    await car.save();
+    //await car.save();
 
-    res.status(200).json({ message: 'Location updated successfully' });
+    res.status(200).json({ message: 'Location updated successfully',
+      latitude,
+      longitude });
   } catch (error) {
     console.error('Error updating location:', error);
     res.status(500).json({ error: 'Server error' });
