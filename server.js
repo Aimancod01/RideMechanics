@@ -698,16 +698,26 @@ const bookingSchema = new mongoose.Schema({
 app.get('/api/bookings/customer/:email', async (req, res) => {
   try {
     const { email } = req.params;
+
+    if (!email) {
+      return res.status(400).json({ error: 'Email is required' });
+    }
+
     const bookings = await Booking.find({ 'customer.email': email }).populate('car');
+
     if (!bookings || bookings.length === 0) {
       return res.status(404).json({ error: 'No bookings found for this customer' });
-    } const validBookings = bookings.filter((booking) => booking.car !== null);
+    }
+
+    const validBookings = bookings.filter((booking) => booking.car);
+
     res.json(validBookings);
   } catch (error) {
-    console.error('Error fetching bookings:', error);
+    console.error('Error fetching bookings:', error.message);
     res.status(500).json({ error: 'Server error' });
   }
 });
+
 
 app.post('/api/bookings', async (req, res) => {
   try {

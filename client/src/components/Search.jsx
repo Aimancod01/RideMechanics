@@ -1,9 +1,9 @@
-import React, { useState, useContext } from 'react';
+import  { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import { FormDataContext } from './FormDataContext';
 import 'react-datepicker/dist/react-datepicker.css';
-import { MapPin, Calendar, Clock, AlertCircle, Search, Users, Car, DoorClosed, Gauge, Wind, Shield, Sparkles, FileText, AlertTriangle } from 'lucide-react';
+import { MapPin, Calendar, Clock, AlertCircle, Search, Users, Car, DoorClosed, Gauge, Wind, Sparkles, FileText, AlertTriangle } from 'lucide-react';
 import axios from 'axios';
 import Modal from 'react-modal';
 

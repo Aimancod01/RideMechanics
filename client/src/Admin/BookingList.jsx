@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import { toast } from "react-toastify";
 import axios from 'axios'; 
 import { useNavigate } from 'react-router-dom'; 
 import { PulseLoader } from 'react-spinners';
-import { Loader2, MapPin, Trash2, User, Mail, CreditCard, Phone, Calendar, Clock, CheckCircle2 } from 'lucide-react'
+import {  MapPin, Trash2, User, Mail, CreditCard, Phone, Calendar, Clock, CheckCircle2 } from 'lucide-react'
 const BookingList = () => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
