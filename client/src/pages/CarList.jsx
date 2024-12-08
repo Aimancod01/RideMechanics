@@ -1,8 +1,7 @@
-import React, { useEffect, useState, useContext } from "react";
+import  { useEffect, useState, useContext } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+
 import Modal from "react-modal";
-//import SearchForm from "../components/Search";
 import { useNavigate } from "react-router-dom";
 import { CartContext } from "../components/CartContext";
 import "flowbite";
@@ -10,8 +9,8 @@ import DatePicker from 'react-datepicker';
 import { FormDataContext } from '../components/FormDataContext';
 import 'react-datepicker/dist/react-datepicker.css';
 import {toast} from 'react-toastify';
-import { Users, Car, Gauge } from "lucide-react";
-import { MapPin, Calendar, Clock, AlertCircle, Search , DoorClosed,  Wind, Sparkles, FileText, AlertTriangle } from 'lucide-react';
+import { Users, } from "lucide-react";
+import { MapPin, Calendar, Clock, AlertCircle, Search  } from 'lucide-react';
 
 import {
   FaDoorOpen,
@@ -20,15 +19,20 @@ import {
   FaCar,
   FaSnowflake,
 } from "react-icons/fa";
+
+
+
+
+
+
 const CarList = () => {
   const { setFormData } = useContext(FormDataContext);
   const [cars, setCars] = useState([]);
   const [selectedCar, setSelectedCar] = useState(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const { addToCart } = useContext(CartContext);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [bookings, setBookings] = useState([]);
+  
+  //const [bookings, setBookings] = useState([]);
   const [city, setCity] = useState('');
   const [pickupDate, setPickupDate] = useState(null);
   const [pickupTime, setPickupTime] = useState('');
@@ -36,9 +40,7 @@ const CarList = () => {
   const [dropoffTime, setDropoffTime] = useState('');
   const [days, setDays] = useState(0);
   const [error, setError] = useState('');
-  //const [cars, setCars] = useState([]);
- // const [modalIsOpen, setModalIsOpen] = useState(false);
- // const [selectedCar, setSelectedCar] = useState(null);
+
   useEffect(() => {
     const fetchCars = async () => {
       try {
@@ -51,7 +53,8 @@ const CarList = () => {
 
     fetchCars();
   }, []);
- // const navigate = useNavigate();
+
+  const navigate = useNavigate();
 
   const handleCustomerForm = () => {
     if (selectedCar) {
@@ -78,6 +81,7 @@ const CarList = () => {
   const handleViewBookings = () => {
     navigate("/getBookingByEmail");
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!city || !pickupDate || !pickupTime || !dropoffDate || !dropoffTime) {
@@ -165,7 +169,7 @@ const CarList = () => {
     '11:00 PM',
   ];
 
-  const navigate = useNavigate();
+  
   return (
     <div className="max-w-7xl mx-auto p-4">
       <div className="bg-gradient-to-r from-orange-100 to-orange-200  rounded-xl  flex items-center justify-center p-6">
@@ -274,6 +278,10 @@ const CarList = () => {
         </div>
       </div>
 
+
+  
+    <div className="max-w-7xl mx-auto p-4">
+      
       <div className="min-h-screen ">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           {" "}
@@ -283,20 +291,11 @@ const CarList = () => {
           >
             View Bookings
           </button>
-          <h2 className="text-3xl font-bold text-orange-600 mb-8 mt-4">
-            Car Rentals
-          </h2>
+          <h2 className="text-3xl font-bold text-orange-600 mb-8 mt-4">Car Rentals</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {cars.map((car) => (
-              <div
-                key={car._id}
-                className="bg-white shadow-lg rounded-lg overflow-hidden relative group transition transform hover:scale-105 hover:shadow-2xl"
-              >
-                <img
-                  src={`http://localhost:5000/${car.image}`}
-                  alt={car.carName}
-                  className="w-full h-48 object-cover"
-                />
+              <div key={car._id} className="bg-white shadow-lg rounded-lg overflow-hidden relative group transition transform hover:scale-105 hover:shadow-2xl">
+                <img src={`http://localhost:5000/${car.image}`} alt={car.carName} className="w-full h-48 object-cover" />
                 <div className="p-6">
                   <h3 className="text-xl font-semibold text-orange-600">
                     {car.carName}
@@ -314,12 +313,10 @@ const CarList = () => {
                       <FaCouch className="mr-1" /> {car.seats} seats
                     </span>
                     <span className="bg-orange-100 text-orange-500 px-2 py-1 rounded-lg text-sm font-semibold">
-                      {car.transmission === "Manual" ? <FaCar /> : <FaBolt />}{" "}
-                      {car.transmission}
+                      {car.transmission === "Manual" ? <FaCar /> : <FaBolt />} {car.transmission}
                     </span>
                     <span className="bg-orange-100 text-orange-500 px-2 py-1 rounded-lg text-sm font-semibold">
-                      <FaSnowflake className="mr-1" />{" "}
-                      {car.ac ? "AC" : "Non-AC"}
+                      <FaSnowflake className="mr-1" /> {car.ac ? "AC" : "Non-AC"}
                     </span>
                   </div>
                   {/* <div className="flex justify-between items-center mb-4"> <div className="flex items-center space-x-2 text-sm text-gray-500">
@@ -331,22 +328,15 @@ const CarList = () => {
                       </span>
                     </div> </div> */}
                   <div className="mt-4 space-x-2">
-                    <span className="bg-purple-100 text-purple-500 text-xs font-semibold px-2 py-1 rounded-lg">
-                      {car.category}
-                    </span>
+                    <span className="bg-purple-100 text-purple-500 text-xs font-semibold px-2 py-1 rounded-lg">{car.category}</span>
 
-                    <span className="bg-green-100 text-green-500 text-xs font-semibold px-2 py-1 rounded-lg ml-2">
-                      Clean Interior/Exterior
-                    </span>
+                    <span className="bg-green-100 text-green-500 text-xs font-semibold px-2 py-1 rounded-lg ml-2">Clean Interior/Exterior</span>
                   </div>
                   <div className="flex justify-between items-center mt-4">
                     <span className=" font-bold text-xl">
                       Rs {car.price}/{car.days} day(s)
                     </span>
-                    <button
-                      onClick={() => openModal(car)}
-                      className="bg-orange-500 text-white font-semibold py-2 px-4 rounded hover:bg-orange-600"
-                    >
+                    <button onClick={() => openModal(car)} className="bg-orange-500 text-white font-semibold py-2 px-4 rounded hover:bg-orange-600">
                       Book me
                     </button>
                   </div>
@@ -355,13 +345,7 @@ const CarList = () => {
             ))}
           </div>
           {selectedCar && (
-            <Modal
-              isOpen={modalIsOpen}
-              onRequestClose={closeModal}
-              contentLabel="Car Preview"
-              className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
-              overlayClassName="bg-gray-800 bg-opacity-75"
-            >
+            <Modal isOpen={modalIsOpen} onRequestClose={closeModal} contentLabel="Car Preview" className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" overlayClassName="bg-gray-800 bg-opacity-75">
               <div className="sm:max-w-[700px] bg-white">
                 <div className="bg-white rounded-lg shadow-lg max-w-2xl w-full mx-auto">
                   <div className="p-6">
@@ -382,21 +366,11 @@ const CarList = () => {
                       <div className="grid gap-6 py-4">
                         {" "}
                         <div className="flex flex-col md:flex-row gap-6">
-                          <img
-                            src={`http://localhost:5000/${selectedCar.image}`}
-                            alt={selectedCar.carName}
-                            className="w-full md:w-1/3 h-48 object-cover rounded-lg"
-                          />
+                          <img src={`http://localhost:5000/${selectedCar.image}`} alt={selectedCar.carName} className="w-full md:w-1/3 h-48 object-cover rounded-lg" />
                           <div className="w-2/3 pl-4">
-                            <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                              {selectedCar.carName}
-                            </h3>
-                            <p className="text-gray-600">
-                              {selectedCar.carModel}
-                            </p>
-                            <p className="text-gray-600">
-                              {selectedCar.carNumber}
-                            </p>
+                            <h3 className="text-2xl font-bold text-gray-900 mb-2">{selectedCar.carName}</h3>
+                            <p className="text-gray-600">{selectedCar.carModel}</p>
+                            <p className="text-gray-600">{selectedCar.carNumber}</p>
                             <p className="text-gray-600">{selectedCar.city}</p>
                             <div className="grid grid-cols-2 gap-4 my-4">
                               <div className="flex items-center gap-2 text-gray-600">
@@ -414,45 +388,30 @@ const CarList = () => {
                               </div>{" "}
                               <div className="flex items-center space-x-2 text-gray-600">
                                 <span className="bg-orange-100 text-orange-500 px-2 py-1 rounded-lg text-sm font-semibold">
-                                  {selectedCar.transmission === "Manual" ? (
-                                    <FaCar />
-                                  ) : (
-                                    <FaBolt />
-                                  )}
+                                  {selectedCar.transmission === "Manual" ? <FaCar /> : <FaBolt />}
                                   {selectedCar.transmission}
                                 </span>
                               </div>{" "}
                               <div className="flex items-center space-x-2 text-gray-600">
                                 <span className="bg-orange-100 text-orange-500 px-2 py-1 rounded-lg text-sm font-semibold">
-                                  <FaSnowflake className="mr-1" />{" "}
-                                  {selectedCar.ac ? "AC" : "Non-AC"}
+                                  <FaSnowflake className="mr-1" /> {selectedCar.ac ? "AC" : "Non-AC"}
                                 </span>
                               </div>{" "}
                             </div>
                             <div className="mt-4 space-x-2">
-                              <span className="bg-blue-100 text-blue-500 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">
-                                {selectedCar.category}
-                              </span>
+                              <span className="bg-blue-100 text-blue-500 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded">{selectedCar.category}</span>
 
-                              <span className="bg-purple-100 text-purple-500 text-xs font-semibold px-2.5 py-0.5 rounded">
-                                Clean Interior/Exterior
-                              </span>
+                              <span className="bg-purple-100 text-purple-500 text-xs font-semibold px-2.5 py-0.5 rounded">Clean Interior/Exterior</span>
                             </div>
                             {/* <p className="mt-4 text-gray-600">
                         Days: {selectedCar.days} 
                       </p> */}
                           </div>
                         </div>
-                       
                         <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-                          <span className="text-2xl font-bold text-orange-600">
-                            Total Rs {selectedCar.price}
-                          </span>{" "}
+                          <span className="text-2xl font-bold text-orange-600">Total Rs {selectedCar.price}</span>{" "}
                           <div className="flex gap-4">
-                            <button
-                              onClick={handleCustomerForm}
-                              className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded"
-                            >
+                            <button onClick={handleCustomerForm} className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded">
                               continue
                             </button>
                           </div>
@@ -466,6 +425,7 @@ const CarList = () => {
           )}
         </div>
       </div>
+    </div>
     </div>
   );
 };

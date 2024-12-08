@@ -20,9 +20,9 @@ const MechanicProfile = ({ mechanic }) => {
         <strong>Working Hours:</strong> {mechanic.workingHours || "9 AM - 6 PM"}
       </p>
       <div className="flex flex-col gap-2 mt-4">
-        <button className="bg-orange-600 text-white rounded-lg px-4 py-2 hover:bg-orange-700 transition" onClick={() => alert(`Calling ${mechanic.phone}`)}>
-          Contact
-        </button>
+        <a href={`tel:${mechanic.phone}`} className="bg-orange-600 text-white rounded-lg px-4 py-2 hover:bg-orange-700 transition text-center">
+          Call {mechanic.name || "Now"}
+        </a>
       </div>
     </div>
   );
