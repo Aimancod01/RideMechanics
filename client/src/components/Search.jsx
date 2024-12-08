@@ -128,7 +128,7 @@ const SearchForm = () => {
     }
   };
   return (
-    <div className="bg-gradient-to-r from-orange-100 to-orange-200 min-h-screen flex items-center justify-center p-4">
+    <div className="bg-gradient-to-r from-orange-100 to-orange-200  rounded-xl  flex items-center justify-center p-6">
       <div className="bg-white rounded-xl shadow-2xl p-4 sm:p-6 md:p-8 lg:p-10 w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl 2xl:max-w-2xl">
         <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-orange-600 mb-2 sm:mb-3 md:mb-4 lg:mb-6 text-center">Find Your Perfect Ride</h2>
         <p className="text-xs sm:text-sm md:text-base lg:text-lg text-gray-600 mb-4 sm:mb-6 md:mb-8 lg:mb-10 text-center">Discover the best and most affordable cars for your journey</p>

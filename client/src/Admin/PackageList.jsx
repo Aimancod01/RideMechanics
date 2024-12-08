@@ -4,6 +4,8 @@ import { Edit2, Trash2 } from "lucide-react"; // Import Lucide icons
 import { PulseLoader } from "react-spinners";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { toast  } from "react-toastify";
+
 
 function PackageList() {
   const [packages, setPackages] = useState([]);
@@ -75,31 +77,36 @@ function PackageList() {
           prev.map((pkg) => (pkg._id === data._id ? data : pkg))
         );
         closeModal(); // Close modal after successful update
+        toast.success("Package updated successfully!");
       } else {
-        console.error("Error updating package");
+        console.error("Error updating package"); toast.error("Failed to update package.");
       }
     } catch (error) {
-      console.error("Error updating package:", error);
+      console.error("Error updating package:", error);  toast.error("An error occurred while updating the package.");
     }
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this package?")) {
+  
       try {
         const response = await fetch(`http://localhost:5000/api/packages/${id}`, {
           method: 'DELETE',
         });
 
         if (response.ok) {
-          // Remove the deleted package from the state
-          window.location.reload(); // Reload page to reflect the changes
+          setPackages((prev) => prev.filter((pkg) => pkg._id !== id));
+          toast.success("Package deleted successfully!"); // Reload page to reflect the changes
+        
         } else {
-          console.error("Error deleting package");
+          const errorData = await response.json();
+      console.error("Error deleting package:", errorData.error);
+            toast.error("Failed to delete package.");
         }
       } catch (error) {
         console.error("Error deleting package:", error);
+        toast.error("An error occurred while deleting the package.");
       }
-    }
+    
   };
 
   const handleCancel = () => {
@@ -109,7 +116,7 @@ function PackageList() {
   };
 
   return (
-    <div className="py-8 px-4 bg-gray-50 min-h-screen flex flex-col items-center">
+    <div className="py-8 px-4 bg-gray-50 min-h-screen flex flex-col items-center"> 
       <div className="mb-6 text-center">
         <button
           className="bg-orange-500 text-white py-2 px-4 rounded-lg shadow-lg transition-all duration-300 hover:bg-orange-600"
@@ -156,10 +163,10 @@ function PackageList() {
                 <div className="p-4">
                   <h3 className="text-xl font-semibold text-gray-800">{pkg.packageName}</h3>
                   <p className="text-gray-600">
-                    <strong>Description:</strong> ${pkg.description}
+                    <strong>Description:</strong>{pkg.description}
                   </p>
                   <p className="text-gray-600">
-                    <strong>Price:</strong> ${pkg.price}
+                    <strong>Price:</strong>{pkg.price}
                   </p>
                   <p className="text-gray-600">
                     <strong>Departure Date:</strong>{" "}

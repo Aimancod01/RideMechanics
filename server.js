@@ -1129,13 +1129,7 @@ app.delete('/api/packages/:id', async (req, res) => {
       return res.status(404).json({ error: 'Package not found' });
     }
 
-    // Optionally, delete the associated image file from the filesystem
-    const picturePath = path.join(__dirname, 'uploads', deletedPackage.picture);
-    fs.unlink(picturePath, (err) => {
-      if (err) {
-        console.error('Error deleting image:', err);
-      }
-    });
+  
 
     res.status(200).json({ message: 'Package deleted successfully' });
   } catch (error) {
@@ -1223,7 +1217,7 @@ app.post("/api/tour-package-payment", async (req, res) => {
 
     const paymentIntent = await stripe.paymentIntents.create({
       amount, // Amount in cents
-      currency: "usd",
+      currency: "pkr",
       payment_method_types: ["card"],
       receipt_email: customerEmail,  description: `Payment for ${customerName}`,
     });
@@ -1239,7 +1233,7 @@ app.post("/api/tour-package-payment", async (req, res) => {
       from: "umar1466088@gmail.com",
       to: customerEmail,
       subject: "Payment Confirmation",
-      text: `Dear ${customerName},\n\nYour payment of $${amount / 100} was successful. Thank you for choosing our service!\n\nBest regards,\nYour Company`,
+      text: `Dear ${customerName},\n\nYour payment of Rs ${amount / 100} was successful. Thank you for choosing our service!\n\nBest regards,\nExplore Ride Mechanics`,
     };
 
     await transporter.sendMail(mailOptions);
@@ -1286,7 +1280,14 @@ app.get("/api/payments/:id", async (req, res) => {
         res.status(500).json({ message: "Error fetching payment data", error: error.message });
     }
 });
-
+app.get("/api/tour-payments", async (req, res) => {
+  try {
+    const payments = await TourPayment.find().populate('customerId packageId');
+    res.status(200).json(payments);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error retrieving payments' });}
+  });
 try {
   await mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,

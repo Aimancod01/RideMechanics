@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, } from 'react';
 import axios from 'axios';
 import 'leaflet/dist/leaflet.css';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';import { useNavigate } from "react-router-dom";
 import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
-
+import { toast  } from "react-toastify";
 const EditCar = () => {
   const [formData, setFormData] = useState({
     carName: '',
@@ -22,7 +22,7 @@ const EditCar = () => {
     longitude: '',
     carNumber: '',
     city: '',
-  });
+  }); const navigate = useNavigate();
   // Function to handle location selection from the map
   const LocationMarker = () => {
     useMapEvents({
@@ -55,14 +55,14 @@ const EditCar = () => {
       priceRange: [0, parseInt(value, 10)]
     });
   };
-  const { id: carId } = useParams(); 
+  const { id: carId } = useParams();
   const handleSubmit = async (e) => {
     e.preventDefault();
-     const formDataToSend = new FormData();
+    const formDataToSend = new FormData();
     for (const key in formData) {
       if (key === 'image' && formData[key]) {
         formDataToSend.append('image', formData[key]);
-      }  else {
+      } else {
         formDataToSend.append(key, formData[key]);
       }
     }
@@ -90,20 +90,35 @@ const EditCar = () => {
         longitude: '',
         carNumber: '',
         city: '',
-      });
+      });toast.success('Car Updated Successfully')
     } catch (error) {
-      console.error('Failed to add car:', error);
+      console.error('Failed to add car:', error);toast.error('Failed Car Updated')
     }
   };
-
+  useEffect(() => {
+    const fetchCarData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/api/cars/${carId}`);
+        setFormData(response.data);  // Set form data with the car details
+      } catch (error) {
+        console.error("Failed to fetch car details:", error);
+      }
+    };
+  
+    fetchCarData();
+  }, [carId]); // Depend on carId to refetch when the id changes
   const handleFileChange = (e) => {
     setFormData({
       ...formData,
       image: e.target.files[0],
     });
   };
-
-  return (
+  const handleCancel = () => {
+    navigate('/cars')
+  };const handleUpdate = () => {
+    navigate('/cars')
+  };
+  return (<div className="max-w-7xl mx-auto p-4">
     <div className="max-w-4xl mx-auto p-4 sm:p-6 md:p-8 bg-white shadow-lg rounded-lg mb-12">
       <h2 className="text-3xl font-bold mb-6 text-orange-600 text-center">Edit Car Details</h2>
 
@@ -116,9 +131,9 @@ const EditCar = () => {
             id="carName"
             name="carName"
             value={formData.carName}
-            onChange={handleChange}
+            onChange={handleChange} placeholder="Enter Car Name"
             className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-orange-500 focus:ring-orange-500"
-            required
+           
           />
         </div>
 
@@ -130,9 +145,9 @@ const EditCar = () => {
             id="carModel"
             name="carModel"
             value={formData.carModel}
-            onChange={handleChange}
+            onChange={handleChange} placeholder="Enter Car Model"
             className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-orange-500 focus:ring-orange-500"
-            required
+           
           />
         </div>
         {/* Map for selecting location */}
@@ -159,9 +174,9 @@ const EditCar = () => {
             id="doors"
             name="doors"
             value={formData.doors}
-            onChange={handleChange}
+            onChange={handleChange} placeholder="Enter Car Doors"
             className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-orange-500 focus:ring-orange-500"
-            required
+           
           />
         </div>
 
@@ -173,9 +188,9 @@ const EditCar = () => {
             id="seats"
             name="seats"
             value={formData.seats}
-            onChange={handleChange}
+            onChange={handleChange} placeholder="Enter Seats"
             className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-orange-500 focus:ring-orange-500"
-            required
+            
           />
         </div>
 
@@ -218,7 +233,7 @@ const EditCar = () => {
               checked={formData.category === 'Economy'}
               onChange={handleChange}
               className="form-radio h-4 w-4 text-orange-600 border-gray-300 focus:ring-orange-500"
-              required
+             
             />
             <span className="text-gray-700 ml-2 text-sm ">Economy</span>
             <input
@@ -228,7 +243,7 @@ const EditCar = () => {
               checked={formData.category === 'Luxury'}
               onChange={handleChange}
               className="form-radio h-4 w-4 text-orange-600 border-gray-300 focus:ring-orange-500"
-              required
+             
             />
             <span className="text-gray-700 ml-2 text-sm ">Luxury</span>
             <input
@@ -238,7 +253,7 @@ const EditCar = () => {
               checked={formData.category === 'Standard'}
               onChange={handleChange}
               className="form-radio h-4 w-4 text-orange-600 border-gray-300 focus:ring-orange-500"
-              required
+              
             />
             <span className="text-gray-700  ml-2 text-sm ">Standard</span>
             <input
@@ -248,7 +263,7 @@ const EditCar = () => {
               checked={formData.category === 'Commercial'}
               onChange={handleChange}
               className="form-radio h-4 w-4 text-orange-600 border-gray-300 focus:ring-orange-500"
-              required
+             
             />
             <span className="text-gray-700 ml-2 text-sm ">Commercial</span>
           </div>
@@ -262,9 +277,9 @@ const EditCar = () => {
               id="price"
               name="price"
               value={formData.price}
-              onChange={handleChange}
+              onChange={handleChange} placeholder="Enter Rented Price"
               className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-orange-500 focus:ring-orange-500"
-              required
+             
             />
           </div>
 
@@ -276,9 +291,9 @@ const EditCar = () => {
               id="days"
               name="days"
               value={formData.days}
-              onChange={handleChange}
+              onChange={handleChange} placeholder="Enter Rented Days"
               className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-orange-500 focus:ring-orange-500"
-              required
+             
             />
           </div>
         </div>
@@ -290,10 +305,10 @@ const EditCar = () => {
               step="any"
               id="latitude"
               name="latitude"
-              value={formData.latitude}
-              onChange={handleChange}
+              value={formData.latitude} disabled
+              onChange={handleChange} placeholder="Enter Car Location Latitude"
               className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-orange-500 focus:ring-orange-500 cursor-not-allowed"
-              required
+             
             />
           </div>
 
@@ -305,10 +320,10 @@ const EditCar = () => {
               step="any"
               id="longitude"
               name="longitude"
-              value={formData.longitude}
-              onChange={handleChange}
+              value={formData.longitude} disabled
+              onChange={handleChange} placeholder="Enter Car Location Longitude"
               className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-orange-500 focus:ring-orange-500 cursor-not-allowed"
-              required
+             
             />
           </div>
         </div>
@@ -320,15 +335,15 @@ const EditCar = () => {
             id="carNumber"
             name="carNumber"
             value={formData.carNumber}
-            onChange={handleChange}
+            onChange={handleChange} placeholder="Enter Car Number"
             className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-orange-500 focus:ring-orange-500"
-            required
+           
           />
         </div>
 
-       
 
-       
+
+
 
         {/* Clean Interior/Exterior */}
         <div className="flex items-center space-x-2">
@@ -339,6 +354,18 @@ const EditCar = () => {
             checked={formData.clean}
             onChange={handleChange}
             className="h-4 w-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500"
+          />
+        </div>
+        {/* City */}
+        <div className="w-full">
+          <label className="block text-sm font-medium text-gray-700">City</label>
+          <input
+            type="text"
+            name="city"
+            value={formData.city}
+            onChange={handleChange} placeholder="Enter City"
+            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-orange-500 focus:ring-orange-500"
+          
           />
         </div>
 
@@ -353,28 +380,22 @@ const EditCar = () => {
           />
         </div>
 
-        {/* City */}
-        <div className="w-full">
-          <label className="block text-sm font-medium text-gray-700">City</label>
-          <input
-            type="text"
-            name="city"
-            value={formData.city}
-            onChange={handleChange}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-orange-500 focus:ring-orange-500"
-            required
-          />
-        </div>
 
         {/* Submit Button */}
         <button
+     onClick={handleUpdate}
           type="submit"
-          className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-4 rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
+          className="bg-orange-500 text-white py-2 px-4 rounded-lg shadow-lg hover:bg-orange-600"
         >
           Edit Car
-        </button>
+        </button> <button
+                className="bg-gray-500 text-white py-2 px-4 rounded-lg shadow-lg hover:bg-gray-600"
+                onClick={handleCancel} // Cancel functionality
+              >
+                Cancel
+              </button>
       </form>
-    </div>
+    </div></div>
   );
 };
 
