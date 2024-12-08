@@ -19,11 +19,6 @@ const Sidebar = () => {
         </Link>
 
         {/* Profile */}
-        <Link to="/profile" className="flex items-center bg-gradient-to-br from-orange-100 to-white rounded-lg shadow-md p-4 transition transform hover:scale-105 hover:shadow-lg">
-          <User size={36} className="text-orange-600 mr-4" />
-
-          <span className="text-sm font-medium text-orange-700">Profile</span>
-        </Link>
 
         {/* Reports */}
         <Link to="/reports" className="flex items-center bg-gradient-to-br from-orange-100 to-white rounded-lg shadow-md p-4 transition transform hover:scale-105 hover:shadow-lg">
@@ -45,7 +40,7 @@ const Sidebar = () => {
         {/* Tour Packages */}
         <Link to="/bookingPackages" className="flex items-center bg-gradient-to-br from-orange-100 to-white rounded-lg shadow-md p-4 transition transform hover:scale-105 hover:shadow-lg">
           <Calendar size={36} className="text-orange-600 mr-4" />
-          <span className="text-sm font-medium text-orange-700">View Tour Packages</span>
+          <span className="text-sm font-medium text-orange-700">View Tour Payments</span>
         </Link>
 
         {/* Mechanics */}
