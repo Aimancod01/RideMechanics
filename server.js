@@ -49,52 +49,29 @@ io.on('connection', (socket) => {
 app.post('/api/update-location/:carId', async (req, res) => {
   try {
     const { latitude, longitude } = req.body;
+
     const car = await Car.findById(req.params.carId);
     if (!car) {
       return res.status(404).json({ error: 'Car not found' });
     }
 
-    // Update car location
-    car.currentLocation = { lat: latitude, lng: longitude };
-    await car.save(); // Emit the updated location to all connected clients
-    io.emit('locationUpdate', { carId: req.params.carId, latitude, longitude });
+    // Update the car's latitude and longitude
+    car.latitude = latitude;
+    car.longitude = longitude;
+    
+    // Optionally, you can also add the new location to locationHistory
+    car.locationHistory.push({ lat: latitude, lng: longitude, timestamp: new Date() });
+
+    await car.save();
+
     res.status(200).json({ message: 'Location updated successfully' });
   } catch (error) {
-    console.error('Server error:', error);
+    console.error('Error updating location:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });
-app.get('/api/car-location-history/:carId', async (req, res) => {
-  try {
-    const car = await Car.findById(req.params.carId);
-    if (!car) {
-      return res.status(404).json({ error: 'Car not found' });
-    }
 
-    res.status(200).json({ locationHistory: car.locationHistory });
-  } catch (error) {
-    console.error('Server error:', error);
-    res.status(500).json({ error: 'Server error' });
-  }
-});
-// Assuming you have a model Car with location data
-app.get('/api/car-location/:carId', async (req, res) => {
-  try {
-    const car = await Car.findById(req.params.carId);
-    if (!car) {
-      return res.status(404).json({ error: 'Car not found' });
-    }
 
-    // Return the car's current location
-    res.status(200).json({
-      latitude: car.currentLocation.lat,
-      longitude: car.currentLocation.lng
-    });
-  } catch (error) {
-    console.error('Server error:', error);
-    res.status(500).json({ error: 'Server error' });
-  }
-});
 import { body, validationResult } from 'express-validator';
 import { Driver } from './models/CarRentalForm.js';
 const stripe = Stripe('sk_test_51Oh1XhAQEV6haT2dohPx2myX27wvPRPM7XasO0OTjDyUt1OYVcM9INe0NVXgTws5EV8kpg9t2n2zO3kjU3bDnvmj00YyVJUzJv');
@@ -132,10 +109,11 @@ const carSchema = new mongoose.Schema({
   carNumber: { type: String, required: true },
   image: { type: String, required: true },
   city: { type: String, required: true },
-  currentLocation: {
-    lat: Number,
-    lng: Number,
-  },
+  locationHistory: [{ lat: Number, lng: Number, timestamp: Date }] 
+  // currentLocation: {
+  //   lat: Number,
+  //   lng: Number,
+  // },
 }); const Car = mongoose.model('Car', carSchema);
 
 
@@ -154,7 +132,37 @@ const driverStorage = multer.diskStorage({
     cb(null, `${Date.now()}-${file.originalname}`);
   },
 });
+app.get('/api/car-location-history/:carId', async (req, res) => {
+  try {
+    const car = await Car.findById(req.params.carId);
+    if (!car) {
+      return res.status(404).json({ error: 'Car not found' });
+    }
 
+    res.status(200).json({ locationHistory: car.locationHistory });
+  } catch (error) {
+    console.error('Server error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+// Assuming you have a model Car with location data
+app.get('/api/car-location/:carId', async (req, res) => {
+  try {
+    const car = await Car.findById(req.params.carId);
+    if (!car) {
+      return res.status(404).json({ error: 'Car not found' });
+    }
+ 
+    // Return the car's current location
+    res.status(200).json({
+      latitude: car.latitude,
+      longitude: car.longitude
+    });
+  } catch (error) {
+    console.error('Server error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
 const uploadDriver = multer({ storage: driverStorage });
 app.post('/api/drivers', uploadDriver.fields([{ name: 'carImage' }, { name: 'driverImage' }]), [
   body('carName').notEmpty().withMessage('Car name is required'),
